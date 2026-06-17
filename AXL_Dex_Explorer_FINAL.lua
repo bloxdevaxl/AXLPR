@@ -1,1581 +1,1598 @@
--- ╔══════════════════════════════════════════════════════════════╗
--- ║              AXL GARDEN 2 - VIP GUI SCRIPT                  ║
--- ║         by @ex_axl | t.me/axcmy | t.me/mmcmy                ║
--- ╚══════════════════════════════════════════════════════════════╝
+-- ╔══════════════════════════════════════════════════════════════════╗
+-- ║               AXL GARDEN 2 - VIP SCRIPT                        ║
+-- ║           Made by AXL | @ex_axl | t.me/axcmy                   ║
+-- ╚══════════════════════════════════════════════════════════════════╝
 
--- ░░ SERVICES ░░
-local Players            = game:GetService("Players")
-local Workspace          = game:GetService("Workspace")
-local ReplicatedStorage  = game:GetService("ReplicatedStorage")
-local RunService         = game:GetService("RunService")
-local TweenService       = game:GetService("TweenService")
-local UserInputService   = game:GetService("UserInputService")
-local CoreGui            = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local Workspace = game:GetService("Workspace")
+local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
 
--- ░░ LOCALS ░░
-local LocalPlayer  = Players.LocalPlayer
-local Character    = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local Mouse        = LocalPlayer:GetMouse()
-
--- Wait for character parts
-local function GetHumanoid()
-    return Character and Character:FindFirstChildOfClass("Humanoid")
-end
-local function GetRoot()
-    local H = GetHumanoid()
-    return H and H.RootPart
-end
-
--- ░░ NETWORKING & MODULES ░░
-local Networking, FruitValueCalc
-pcall(function()
-    Networking     = require(ReplicatedStorage:WaitForChild("SharedModules"):WaitForChild("Networking"))
-    FruitValueCalc = require(ReplicatedStorage:WaitForChild("SharedModules"):WaitForChild("FruitValueCalc"))
-end)
-
-local Gardens = Workspace:FindFirstChild("Gardens")
-
--- ░░ LANGUAGE SYSTEM ░░
+-- ══════════════════════════════════════════════════════════
+--                    LANGUAGE SYSTEM
+-- ══════════════════════════════════════════════════════════
 local LANG = "EN"
-local Strings = {
+local TRANSLATIONS = {
     EN = {
-        title         = "AXL GARDEN 2",
-        loading       = "Loading...",
-        chooseLanguage= "Choose Language",
-        tabInfo       = "INFO",
-        tabPlayer     = "PLAYER",
-        tabFeatures   = "FEATURES",
-        tabSettings   = "SETTINGS",
-        gardens       = "Gardens",
-        droppedItems  = "Dropped Items",
-        wildPets      = "Wild Pet Spawns",
-        seedPack      = "Seed Pack Spawner",
-        autoProxy     = "Auto Proxy Farm",
-        yourPlot      = "Your Plot:",
-        notFound      = "Not Found",
-        teleport      = "Teleport",
-        status        = "Status:",
-        active        = "ACTIVE",
-        inactive      = "INACTIVE",
-        petESP        = "Pet ESP",
-        autoTp        = "Auto Teleport",
-        autoBuy       = "Auto Buy",
-        speed         = "Speed",
-        toggle        = "Toggle",
-        discord       = "Discord",
-        telegram      = "Telegram",
-        version       = "Version: 2.0",
-        credits       = "Credits",
-        selectPlot    = "Select Plot",
-        plotLabel     = "Plot",
-        farmLabel     = "Your Farm Code:",
-        noPlot        = "No plot found",
-        collecting    = "Collecting...",
-        idle          = "Idle",
-        autoFarm      = "Auto Farm",
-        enabled       = "Enabled",
-        disabled      = "Disabled",
-        minimize      = "Minimize",
-        close         = "Close",
-        notification  = "Notification",
-        found         = "Found",
-        moving        = "Moving to target...",
-        collected     = "Collected!",
-        petFound      = "Pet Spotted:",
+        loading = "AXL GARDEN 2",
+        loading_sub = "Initializing VIP Systems...",
+        choose_lang = "Choose Language",
+        info_tab = "Info",
+        player_tab = "Player",
+        features_tab = "Features",
+        settings_tab = "Settings",
+        copyright = "© AXL GARDEN 2 - All Rights Reserved",
+        discord = "Discord",
+        telegram_axl = "Telegram AXL",
+        telegram_mm = "Telegram MM",
+        copy = "Copy",
+        copied = "Copied!",
+        plot_finder = "Plot Finder",
+        your_plot = "Your Plot:",
+        not_found = "Not Found",
+        navigate_to = "Navigate to Plot:",
+        dropped_items = "Dropped Items",
+        dropped_toggle = "Auto Collect Dropped Items",
+        wild_pets = "Wild Pet ESP",
+        auto_buy = "Auto Buy Pet",
+        auto_teleport = "Auto Teleport to Pet",
+        seed_pack = "Seed Pack Collector",
+        seed_toggle = "Auto Collect Seed Packs",
+        auto_harvest = "Auto Harvest All Farms",
+        auto_proxy = "Auto Proxy (My Garden)",
+        proxy_toggle = "Enable Auto Proxy",
+        settings_title = "Settings",
+        language = "Language",
+        transparency = "GUI Transparency",
+        notifications = "Notifications",
+        notif_on = "ON",
+        notif_off = "OFF",
+        player_info = "Player Information",
+        username = "Username",
+        userid = "User ID",
+        gamemode = "Game",
+        status_active = "✓ ACTIVE",
+        status_inactive = "✗ INACTIVE",
+        minimize = "Minimize",
+        close = "Close",
+        found_in = "Found in",
     },
     AR = {
-        title         = "AXL GARDEN 2",
-        loading       = "جاري التحميل...",
-        chooseLanguage= "اختيار اللغة",
-        tabInfo       = "معلومات",
-        tabPlayer     = "اللاعب",
-        tabFeatures   = "مميزات",
-        tabSettings   = "الإعدادات",
-        gardens       = "الحدائق",
-        droppedItems  = "العناصر المسقطة",
-        wildPets      = "ظهور الحيوانات",
-        seedPack      = "حزمة البذور",
-        autoProxy     = "زراعة تلقائية",
-        yourPlot      = "مزرعتك:",
-        notFound      = "غير موجود",
-        teleport      = "انتقال",
-        status        = "الحالة:",
-        active        = "نشط",
-        inactive      = "غير نشط",
-        petESP        = "كشف الحيوانات",
-        autoTp        = "انتقال تلقائي",
-        autoBuy       = "شراء تلقائي",
-        speed         = "السرعة",
-        toggle        = "تفعيل",
-        discord       = "ديسكورد",
-        telegram      = "تيليغرام",
-        version       = "الإصدار: 2.0",
-        credits       = "حقوق",
-        selectPlot    = "اختر المزرعة",
-        plotLabel     = "مزرعة",
-        farmLabel     = "كود مزرعتك:",
-        noPlot        = "لا توجد مزرعة",
-        collecting    = "جمع...",
-        idle          = "خامل",
-        autoFarm      = "زراعة تلقائية",
-        enabled       = "مفعّل",
-        disabled      = "معطّل",
-        minimize      = "تصغير",
-        close         = "إغلاق",
-        notification  = "إشعار",
-        found         = "تم إيجاد",
-        moving        = "التنقل للهدف...",
-        collected     = "تم الجمع!",
-        petFound      = "حيوان ظهر:",
+        loading = "AXL GARDEN 2",
+        loading_sub = "جاري تهيئة أنظمة VIP...",
+        choose_lang = "اختر اللغة",
+        info_tab = "معلومات",
+        player_tab = "اللاعب",
+        features_tab = "مميزات",
+        settings_tab = "الإعدادات",
+        copyright = "© AXL GARDEN 2 - جميع الحقوق محفوظة",
+        discord = "ديسكورد",
+        telegram_axl = "تيليغرام AXL",
+        telegram_mm = "تيليغرام MM",
+        copy = "نسخ",
+        copied = "تم النسخ!",
+        plot_finder = "باحث المزرعة",
+        your_plot = "مزرعتك:",
+        not_found = "غير موجود",
+        navigate_to = "انتقل إلى:",
+        dropped_items = "العناصر الساقطة",
+        dropped_toggle = "التقاط تلقائي للعناصر",
+        wild_pets = "رادار الحيوانات البرية",
+        auto_buy = "شراء تلقائي",
+        auto_teleport = "انتقال تلقائي للحيوان",
+        seed_pack = "جامع حزم البذور",
+        seed_toggle = "التقاط تلقائي للبذور",
+        auto_harvest = "حصاد تلقائي لكل المزارع",
+        auto_proxy = "بروكسي تلقائي (مزرعتي)",
+        proxy_toggle = "تفعيل البروكسي التلقائي",
+        settings_title = "الإعدادات",
+        language = "اللغة",
+        transparency = "شفافية الواجهة",
+        notifications = "الإشعارات",
+        notif_on = "مفعّل",
+        notif_off = "معطّل",
+        player_info = "معلومات اللاعب",
+        username = "اسم المستخدم",
+        userid = "معرف المستخدم",
+        gamemode = "اللعبة",
+        status_active = "✓ مفعّل",
+        status_inactive = "✗ معطّل",
+        minimize = "تصغير",
+        close = "إغلاق",
+        found_in = "موجود في",
     },
     KU = {
-        title         = "AXL GARDEN 2",
-        loading       = "باركردن...",
-        chooseLanguage= "زمان هەڵبژێرە",
-        tabInfo       = "زانیاری",
-        tabPlayer     = "یاریزان",
-        tabFeatures   = "تایبەتمەندی",
-        tabSettings   = "ڕێکخستن",
-        gardens       = "باخچەکان",
-        droppedItems  = "شتە کەوتووەکان",
-        wildPets      = "دەرکەوتنی ئاژەڵ",
-        seedPack      = "پاکێتی تۆو",
-        autoProxy     = "چێشتکاری ئۆتۆماتیکی",
-        yourPlot      = "زەوییەکەت:",
-        notFound      = "نەدۆزرایەوە",
-        teleport      = "گواستنەوە",
-        status        = "دۆخ:",
-        active        = "چالاک",
-        inactive      = "ناچالاک",
-        petESP        = "دیتنی ئاژەڵ",
-        autoTp        = "گواستنەوەی ئۆتۆماتیک",
-        autoBuy       = "کڕینی ئۆتۆماتیک",
-        speed         = "خێرایی",
-        toggle        = "کردنەوە",
-        discord       = "دیسکۆرد",
-        telegram      = "تێلێگرام",
-        version       = "وەشان: 2.0",
-        credits       = "مافەکان",
-        selectPlot    = "زەوی هەڵبژێرە",
-        plotLabel     = "زەوی",
-        farmLabel     = "کۆدی زەوییەکەت:",
-        noPlot        = "زەوی نەدۆزرایەوە",
-        collecting    = "کۆکردنەوە...",
-        idle          = "بەتاڵ",
-        autoFarm      = "چێشتکاری ئۆتۆماتیکی",
-        enabled       = "چالاک کرا",
-        disabled      = "ناچالاک کرا",
-        minimize      = "بچووک کردن",
-        close         = "داخستن",
-        notification  = "ئاگادارکردنەوە",
-        found         = "دۆزرایەوە",
-        moving        = "بەرەو ئامانجەوە...",
-        collected     = "کۆکرایەوە!",
-        petFound      = "ئاژەڵ دەرکەوت:",
+        loading = "AXL GARDEN 2",
+        loading_sub = "سیستەمی VIP دەستپێدەکات...",
+        choose_lang = "زمان هەڵبژێرە",
+        info_tab = "زانیاری",
+        player_tab = "یاریزان",
+        features_tab = "تایبەتمەندی",
+        settings_tab = "ڕێکخستن",
+        copyright = "© AXL GARDEN 2 - هەموو مافەکان پارێزراون",
+        discord = "دیسکۆرد",
+        telegram_axl = "تێلێگرام AXL",
+        telegram_mm = "تێلێگرام MM",
+        copy = "کۆپی",
+        copied = "کۆپی کرا!",
+        plot_finder = "دۆزەرەوەی زەوی",
+        your_plot = "زەویت:",
+        not_found = "نەدۆزرایەوە",
+        navigate_to = "بڕۆ بۆ:",
+        dropped_items = "شتە کەوتووەکان",
+        dropped_toggle = "کۆکردنەوەی خۆکار",
+        wild_pets = "ESP ئاژەڵی کێوی",
+        auto_buy = "کڕینی خۆکار",
+        auto_teleport = "گواستنەوەی خۆکار",
+        seed_pack = "کۆکەرەوەی تۆوەکان",
+        seed_toggle = "کۆکردنەوەی تۆوی خۆکار",
+        auto_harvest = "چنینی خۆکاری هەموو زەوییەکان",
+        auto_proxy = "پرۆکسی خۆکار (زەویم)",
+        proxy_toggle = "چالاककردنی پرۆکسی",
+        settings_title = "ڕێکخستن",
+        language = "زمان",
+        transparency = "ڕووناکی",
+        notifications = "ئاگادارکردنەوەکان",
+        notif_on = "چالاک",
+        notif_off = "ناچالاک",
+        player_info = "زانیاری یاریزان",
+        username = "ناوی بەکارهێنەر",
+        userid = "ناسنامەی بەکارهێنەر",
+        gamemode = "یاری",
+        status_active = "✓ چالاک",
+        status_inactive = "✗ ناچالاک",
+        minimize = "بچووک بکەرەوە",
+        close = "داخستن",
+        found_in = "دۆزرایەوە لە",
     }
 }
+
 local function T(key)
-    return (Strings[LANG] and Strings[LANG][key]) or (Strings["EN"][key]) or key
+    return TRANSLATIONS[LANG][key] or TRANSLATIONS["EN"][key] or key
 end
 
--- ░░ COLORS / THEME ░░
-local C = {
-    bg        = Color3.fromRGB(8,  8,  12),
-    bgPanel   = Color3.fromRGB(14, 14, 20),
-    bgCard    = Color3.fromRGB(20, 20, 30),
-    border    = Color3.fromRGB(255,255,255),
-    accent    = Color3.fromRGB(80, 180, 255),
-    accentGlow= Color3.fromRGB(40, 120, 220),
-    green     = Color3.fromRGB(60, 220, 120),
-    red       = Color3.fromRGB(220, 60, 80),
-    text      = Color3.fromRGB(230,230,240),
-    textDim   = Color3.fromRGB(140,140,160),
-    white     = Color3.fromRGB(255,255,255),
-    tabActive = Color3.fromRGB(30, 30, 50),
-    tabInact  = Color3.fromRGB(14, 14, 20),
-    gold      = Color3.fromRGB(255, 200, 50),
+-- ══════════════════════════════════════════════════════════
+--                    COLORS & THEME
+-- ══════════════════════════════════════════════════════════
+local COLORS = {
+    BG          = Color3.fromRGB(5, 5, 5),
+    BG_DARK     = Color3.fromRGB(0, 0, 0),
+    BG_CARD     = Color3.fromRGB(10, 10, 10),
+    BORDER      = Color3.fromRGB(255, 255, 255),
+    ACCENT      = Color3.fromRGB(220, 180, 50),
+    ACCENT2     = Color3.fromRGB(255, 215, 0),
+    TEXT        = Color3.fromRGB(255, 255, 255),
+    TEXT_DIM    = Color3.fromRGB(160, 160, 160),
+    TEXT_GOLD   = Color3.fromRGB(220, 180, 50),
+    TAB_ACTIVE  = Color3.fromRGB(20, 20, 20),
+    TAB_IDLE    = Color3.fromRGB(5, 5, 5),
+    SUCCESS     = Color3.fromRGB(50, 200, 100),
+    DANGER      = Color3.fromRGB(220, 60, 60),
+    BTN_DARK    = Color3.fromRGB(15, 15, 15),
+    TOGGLE_ON   = Color3.fromRGB(50, 200, 100),
+    TOGGLE_OFF  = Color3.fromRGB(60, 60, 60),
+    TRANSPARENT = Color3.fromRGB(0, 0, 0),
 }
 
--- ░░ HELPER: Create Instance ░░
-local function New(class, props, children)
-    local obj = Instance.new(class)
-    for k,v in pairs(props) do obj[k] = v end
-    if children then
-        for _,child in pairs(children) do child.Parent = obj end
-    end
-    return obj
-end
+-- ══════════════════════════════════════════════════════════
+--                    STATE
+-- ══════════════════════════════════════════════════════════
+local State = {
+    currentTab = "info",
+    isMinimized = false,
+    selectedPlot = "Plot1",
+    myPlot = "Searching...",
+    droppedItemsToggle = false,
+    autoHarvestToggle = false,
+    autoProxyToggle = false,
+    seedPackToggle = false,
+    wildPetESP = {},
+    petAutoSettings = {},
+    notifications = true,
+    droppedConnections = {},
+    espBillboards = {},
+}
 
-local function Tween(obj, info, props)
+-- Pet rarities and prices
+local WILD_PETS = {
+    {name="Frog",           rarity="Common",    price=10000,    egg="Common Egg (30%)"},
+    {name="Bunny",          rarity="Common",    price=20000,    egg="Common Egg (30%)"},
+    {name="Owl",            rarity="Uncommon",  price=25000,    egg=nil},
+    {name="Deer",           rarity="Rare",      price=50000,    egg="Common Egg (20%)"},
+    {name="Robin",          rarity="Legendary", price=75000,    egg="Common Egg (4.5%)"},
+    {name="Bee",            rarity="Legendary", price=1000000,  egg="Common Egg (4.5%)"},
+    {name="Monkey",         rarity="Mythic",    price=3000000,  egg=nil},
+    {name="Golden Dragonfly",rarity="Mythic",   price=9000000,  egg=nil},
+    {name="Unicorn",        rarity="Mythic",    price=12000000, egg="Common Egg (0.3%)"},
+    {name="Raccoon",        rarity="Super",     price=15000000, egg="Common Egg (0.2%)"},
+    {name="Black Dragon",   rarity="Super",     price=1000000,  egg=nil},
+    {name="Ice Serpent",    rarity="Super",     price=0,        egg="Guild Reward"},
+}
+
+local RARITY_COLORS = {
+    Common    = Color3.fromRGB(180,180,180),
+    Uncommon  = Color3.fromRGB(80,200,80),
+    Rare      = Color3.fromRGB(80,120,220),
+    Legendary = Color3.fromRGB(220,160,40),
+    Mythic    = Color3.fromRGB(180,60,220),
+    Super     = Color3.fromRGB(220,60,60),
+}
+
+-- ══════════════════════════════════════════════════════════
+--                    UTILITY FUNCTIONS
+-- ══════════════════════════════════════════════════════════
+local function Tween(obj, props, t, style, dir)
+    local info = TweenInfo.new(t or 0.25, style or Enum.EasingStyle.Quart, dir or Enum.EasingDirection.Out)
     TweenService:Create(obj, info, props):Play()
 end
 
-local function MakeCorner(radius, parent)
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius)
-    c.Parent = parent
-    return c
-end
-
-local function MakeStroke(thickness, color, parent)
-    local s = Instance.new("UIStroke")
-    s.Thickness = thickness
-    s.Color = color
-    s.Parent = parent
-    return s
-end
-
-local function MakePadding(t, b, l, r, parent)
-    local p = Instance.new("UIPadding")
-    p.PaddingTop    = UDim.new(0, t)
-    p.PaddingBottom = UDim.new(0, b)
-    p.PaddingLeft   = UDim.new(0, l)
-    p.PaddingRight  = UDim.new(0, r)
-    p.Parent = parent
-    return p
-end
-
--- ░░ NOTIFICATION SYSTEM ░░
-local NotifHolder
-
-local function Notify(msg, color)
-    if not NotifHolder then return end
-    color = color or C.accent
-
-    local notif = New("Frame", {
-        Parent          = NotifHolder,
-        BackgroundColor3= C.bgCard,
-        Size            = UDim2.new(1, 0, 0, 0),
-        ClipsDescendants= true,
-        AutomaticSize   = Enum.AutomaticSize.Y,
-    })
-    MakeCorner(8, notif)
-    MakeStroke(1, color, notif)
-    MakePadding(8, 8, 12, 12, notif)
-
-    New("TextLabel", {
-        Parent           = notif,
-        Text             = "🌿 " .. msg,
-        TextColor3       = C.text,
-        Font             = Enum.Font.GothamMedium,
-        TextSize         = 13,
-        Size             = UDim2.new(1, 0, 0, 20),
-        BackgroundTransparency = 1,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        TextWrapped      = true,
-    })
-
-    notif.BackgroundTransparency = 1
-    Tween(notif, TweenInfo.new(0.3), {BackgroundTransparency = 0})
-
-    task.delay(3, function()
-        Tween(notif, TweenInfo.new(0.3), {BackgroundTransparency = 1})
-        task.wait(0.35)
-        notif:Destroy()
+local function Notify(msg)
+    if not State.notifications then return end
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = "AXL GARDEN 2",
+            Text = msg,
+            Duration = 3,
+        })
     end)
 end
 
--- ░░ TOGGLE BUTTON MAKER ░░
-local function MakeToggle(parent, labelText, defaultState, callback)
-    local state = defaultState or false
+local function SafeTeleport(pos)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(pos)
+    end
+end
 
-    local row = New("Frame", {
-        Parent          = parent,
-        BackgroundColor3= C.bgCard,
-        Size            = UDim2.new(1, 0, 0, 44),
-    })
-    MakeCorner(8, row)
-    MakePadding(0, 0, 12, 12, row)
-    MakeStroke(1, Color3.fromRGB(40,40,60), row)
+local function CopyToClipboard(text)
+    pcall(function() setclipboard(text) end)
+end
 
-    local lbl = New("TextLabel", {
-        Parent           = row,
-        Text             = labelText,
-        TextColor3       = C.text,
-        Font             = Enum.Font.GothamMedium,
-        TextSize         = 13,
-        Position         = UDim2.new(0, 0, 0, 0),
-        Size             = UDim2.new(1, -60, 1, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-    })
+local function FormatPrice(n)
+    if n == 0 then return "Guild Reward" end
+    if n >= 1000000 then return string.format("%.1fM ₪", n/1000000) end
+    if n >= 1000 then return string.format("%.0fK ₪", n/1000) end
+    return tostring(n) .. " ₪"
+end
 
-    local track = New("Frame", {
-        Parent          = row,
-        Position        = UDim2.new(1, -54, 0.5, -11),
-        Size            = UDim2.new(0, 44, 0, 22),
-        BackgroundColor3= state and C.green or Color3.fromRGB(50,50,70),
-    })
-    MakeCorner(11, track)
+-- ══════════════════════════════════════════════════════════
+--                    GAME FUNCTIONS
+-- ══════════════════════════════════════════════════════════
+local function FindMyPlot()
+    local char = LocalPlayer.Character
+    if not char then return nil end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
 
-    local knob = New("Frame", {
-        Parent          = track,
-        Position        = state and UDim2.new(1, -20, 0.5, -8) or UDim2.new(0, 2, 0.5, -8),
-        Size            = UDim2.new(0, 18, 0, 18),
-        BackgroundColor3= C.white,
-    })
-    MakeCorner(9, knob)
+    local gardensFolder = Workspace:FindFirstChild("Gardens")
+    if not gardensFolder then
+        -- Try to find it anywhere
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "Gardens" and v:IsA("Folder") then
+                gardensFolder = v
+                break
+            end
+        end
+    end
+    if not gardensFolder then return nil end
 
-    local btn = New("TextButton", {
-        Parent               = row,
-        Text                 = "",
-        Size                 = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-    })
+    local closest, closestDist = nil, math.huge
+    for i = 1, 8 do
+        local plot = gardensFolder:FindFirstChild("Plot"..i)
+        if plot then
+            local primary = plot:FindFirstChildWhichIsA("BasePart", true)
+            if primary then
+                local dist = (hrp.Position - primary.Position).Magnitude
+                if dist < closestDist then
+                    closestDist = dist
+                    closest = "Plot"..i
+                end
+            end
+        end
+    end
+    return closest, closestDist
+end
+
+local function TeleportToPlot(plotName)
+    local gardensFolder = Workspace:FindFirstChild("Gardens")
+    if not gardensFolder then return end
+    local plot = gardensFolder:FindFirstChild(plotName)
+    if plot then
+        local part = plot:FindFirstChildWhichIsA("BasePart", true)
+        if part then
+            SafeTeleport(part.Position + Vector3.new(0, 5, 0))
+            Notify("Teleported to " .. plotName)
+        end
+    end
+end
+
+local function CollectDroppedItem(item)
+    pcall(function()
+        local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local part = item:FindFirstChildWhichIsA("BasePart")
+        if part then
+            for i = 1, 5 do
+                hrp.CFrame = CFrame.new(part.Position + Vector3.new(0, 2, 0))
+                task.wait(0.05)
+                local remotes = ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage:FindFirstChild("Events")
+                if remotes then
+                    local collect = remotes:FindFirstChild("CollectItem") or remotes:FindFirstChild("Collect")
+                    if collect then
+                        pcall(function() collect:FireServer(item) end)
+                    end
+                end
+                task.wait(0.05)
+            end
+        end
+    end)
+end
+
+local function StartDroppedItemsLoop()
+    if State.droppedItemsLoop then
+        State.droppedItemsLoop = false
+        task.wait(0.1)
+    end
+    State.droppedItemsLoop = true
+    task.spawn(function()
+        while State.droppedItemsLoop and State.droppedItemsToggle do
+            pcall(function()
+                local dropped = Workspace:FindFirstChild("DroppedItems")
+                if dropped then
+                    for _, item in ipairs(dropped:GetChildren()) do
+                        if State.droppedItemsToggle then
+                            CollectDroppedItem(item)
+                        end
+                    end
+                end
+            end)
+            task.wait(0.3)
+        end
+    end)
+end
+
+local function ClearESP()
+    for _, bb in ipairs(State.espBillboards) do
+        pcall(function() bb:Destroy() end)
+    end
+    State.espBillboards = {}
+end
+
+local function CreateESPBillboard(part, petName, rarity)
+    local bb = Instance.new("BillboardGui")
+    bb.Name = "AXL_ESP_"..petName
+    bb.AlwaysOnTop = true
+    bb.Size = UDim2.new(0, 180, 0, 50)
+    bb.StudsOffset = Vector3.new(0, 4, 0)
+    bb.Adornee = part
+    bb.Parent = part
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    frame.BackgroundTransparency = 0.3
+    frame.BorderSizePixel = 1
+    frame.BorderColor3 = RARITY_COLORS[rarity] or Color3.fromRGB(255,255,255)
+    frame.Parent = bb
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1,0,1,0)
+    label.BackgroundTransparency = 1
+    label.Text = "🐾 " .. petName .. "\n[" .. rarity .. "]"
+    label.TextColor3 = RARITY_COLORS[rarity] or Color3.fromRGB(255,255,255)
+    label.TextScaled = true
+    label.Font = Enum.Font.GothamBold
+    label.Parent = frame
+
+    table.insert(State.espBillboards, bb)
+    return bb
+end
+
+local function ScanWildPets()
+    ClearESP()
+    pcall(function()
+        for _, petData in ipairs(WILD_PETS) do
+            if State.wildPetESP[petData.name] then
+                for _, obj in ipairs(Workspace:GetDescendants()) do
+                    if obj.Name:lower():find(petData.name:lower()) and obj:IsA("Model") then
+                        local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+                        if primary then
+                            CreateESPBillboard(primary, petData.name, petData.rarity)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
+local function StartSeedPackLoop()
+    if State.seedPackLoop then
+        State.seedPackLoop = false
+        task.wait(0.1)
+    end
+    State.seedPackLoop = true
+    task.spawn(function()
+        while State.seedPackLoop and State.seedPackToggle do
+            pcall(function()
+                for _, obj in ipairs(Workspace:GetDescendants()) do
+                    if obj.Name == "SeedPackSpawnClient" or obj.Name:find("SeedPack") then
+                        local part = obj:FindFirstChildWhichIsA("BasePart") or (obj:IsA("BasePart") and obj)
+                        if part then
+                            SafeTeleport(part.Position + Vector3.new(0, 3, 0))
+                            task.wait(0.1)
+                            local remotes = ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage:FindFirstChild("Events")
+                            if remotes then
+                                local collect = remotes:FindFirstChild("CollectSeedPack") or remotes:FindFirstChild("Collect")
+                                if collect then
+                                    pcall(function() collect:FireServer(obj) end)
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+            task.wait(0.5)
+        end
+    end)
+end
+
+local function StartAutoHarvest()
+    task.spawn(function()
+        pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lxte/projects/refs/heads/main/Games/GrowAGarden/PlantStealer.luau"))()
+        end)
+    end)
+end
+
+local function StartAutoProxy()
+    if State.autoProxyLoop then
+        State.autoProxyLoop = false
+        task.wait(0.1)
+    end
+    State.autoProxyLoop = true
+    task.spawn(function()
+        while State.autoProxyLoop and State.autoProxyToggle do
+            pcall(function()
+                local myPlotName = FindMyPlot()
+                if myPlotName then
+                    local gardensFolder = Workspace:FindFirstChild("Gardens")
+                    if gardensFolder then
+                        local plot = gardensFolder:FindFirstChild(myPlotName)
+                        if plot then
+                            for _, item in ipairs(plot:GetDescendants()) do
+                                if item:IsA("BasePart") and item.Name:find("Collectible") then
+                                    CollectDroppedItem(item)
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+            task.wait(1)
+        end
+    end)
+end
+
+-- ══════════════════════════════════════════════════════════
+--              GUI BUILDER
+-- ══════════════════════════════════════════════════════════
+-- Remove old GUI if exists
+if LocalPlayer.PlayerGui:FindFirstChild("AXL_GARDEN_2_GUI") then
+    LocalPlayer.PlayerGui.AXL_GARDEN_2_GUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AXL_GARDEN_2_GUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.Parent = LocalPlayer.PlayerGui
+
+-- ══════════════════════════════════════════════════════════
+--              LOADING SCREEN
+-- ══════════════════════════════════════════════════════════
+local LoadFrame = Instance.new("Frame")
+LoadFrame.Name = "LoadScreen"
+LoadFrame.Size = UDim2.new(1, 0, 1, 0)
+LoadFrame.Position = UDim2.new(0, 0, 0, 0)
+LoadFrame.BackgroundColor3 = COLORS.BG_DARK
+LoadFrame.BorderSizePixel = 0
+LoadFrame.ZIndex = 100
+LoadFrame.Parent = ScreenGui
+
+local LoadTitle = Instance.new("TextLabel")
+LoadTitle.Size = UDim2.new(0, 500, 0, 80)
+LoadTitle.Position = UDim2.new(0.5, -250, 0.35, 0)
+LoadTitle.BackgroundTransparency = 1
+LoadTitle.Text = "AXL GARDEN 2"
+LoadTitle.TextColor3 = COLORS.ACCENT2
+LoadTitle.TextScaled = true
+LoadTitle.Font = Enum.Font.GothamBold
+LoadTitle.ZIndex = 101
+LoadTitle.Parent = LoadFrame
+
+local LoadSub = Instance.new("TextLabel")
+LoadSub.Size = UDim2.new(0, 500, 0, 35)
+LoadSub.Position = UDim2.new(0.5, -250, 0.47, 0)
+LoadSub.BackgroundTransparency = 1
+LoadSub.Text = T("loading_sub")
+LoadSub.TextColor3 = COLORS.TEXT_DIM
+LoadSub.TextScaled = true
+LoadSub.Font = Enum.Font.Gotham
+LoadSub.ZIndex = 101
+LoadSub.Parent = LoadFrame
+
+-- Language selector on load screen
+local LangFrame = Instance.new("Frame")
+LangFrame.Size = UDim2.new(0, 360, 0, 60)
+LangFrame.Position = UDim2.new(0.5, -180, 0.58, 0)
+LangFrame.BackgroundTransparency = 1
+LangFrame.ZIndex = 101
+LangFrame.Parent = LoadFrame
+
+local langBtns = {
+    {lang="EN", label="🇬🇧 English"},
+    {lang="AR", label="🇸🇦 العربية"},
+    {lang="KU", label="🏴 کوردی"},
+}
+
+for i, lb in ipairs(langBtns) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 110, 0, 50)
+    btn.Position = UDim2.new(0, (i-1)*125, 0, 0)
+    btn.BackgroundColor3 = COLORS.BG_CARD
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = COLORS.BORDER
+    btn.Text = lb.label
+    btn.TextColor3 = COLORS.TEXT
+    btn.TextScaled = true
+    btn.Font = Enum.Font.GothamBold
+    btn.ZIndex = 102
+    btn.Parent = LangFrame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = btn
 
     btn.MouseButton1Click:Connect(function()
-        state = not state
-        Tween(track, TweenInfo.new(0.2), {BackgroundColor3 = state and C.green or Color3.fromRGB(50,50,70)})
-        Tween(knob,  TweenInfo.new(0.2), {Position = state and UDim2.new(1,-20,0.5,-8) or UDim2.new(0,2,0.5,-8)})
-        if callback then callback(state) end
+        LANG = lb.lang
+        LoadSub.Text = T("loading_sub")
+        Tween(btn, {BackgroundColor3 = COLORS.ACCENT}, 0.15)
+        task.wait(0.15)
+        Tween(btn, {BackgroundColor3 = COLORS.BG_CARD}, 0.15)
     end)
+end
 
-    return {
-        Frame  = row,
-        GetState = function() return state end,
-        SetState = function(v)
-            state = v
-            Tween(track, TweenInfo.new(0.2), {BackgroundColor3 = state and C.green or Color3.fromRGB(50,50,70)})
-            Tween(knob,  TweenInfo.new(0.2), {Position = state and UDim2.new(1,-20,0.5,-8) or UDim2.new(0,2,0.5,-8)})
+-- Progress bar
+local ProgressBG = Instance.new("Frame")
+ProgressBG.Size = UDim2.new(0, 400, 0, 6)
+ProgressBG.Position = UDim2.new(0.5, -200, 0.72, 0)
+ProgressBG.BackgroundColor3 = Color3.fromRGB(30,30,30)
+ProgressBG.BorderSizePixel = 1
+ProgressBG.BorderColor3 = COLORS.BORDER
+ProgressBG.ZIndex = 101
+ProgressBG.Parent = LoadFrame
+
+local ProgressBar = Instance.new("Frame")
+ProgressBar.Size = UDim2.new(0, 0, 1, 0)
+ProgressBar.BackgroundColor3 = COLORS.ACCENT2
+ProgressBar.BorderSizePixel = 0
+ProgressBar.ZIndex = 102
+ProgressBar.Parent = ProgressBG
+
+local ProgressLabel = Instance.new("TextLabel")
+ProgressLabel.Size = UDim2.new(0, 400, 0, 30)
+ProgressLabel.Position = UDim2.new(0.5, -200, 0.74, 0)
+ProgressLabel.BackgroundTransparency = 1
+ProgressLabel.Text = "0%"
+ProgressLabel.TextColor3 = COLORS.TEXT_DIM
+ProgressLabel.TextScaled = true
+ProgressLabel.Font = Enum.Font.GothamBold
+ProgressLabel.ZIndex = 101
+ProgressLabel.Parent = LoadFrame
+
+-- Animate progress
+task.spawn(function()
+    for i = 1, 100 do
+        Tween(ProgressBar, {Size = UDim2.new(i/100, 0, 1, 0)}, 0.03, Enum.EasingStyle.Linear)
+        ProgressLabel.Text = i .. "%"
+        task.wait(0.04)
+    end
+    task.wait(0.3)
+    Tween(LoadFrame, {BackgroundTransparency = 1}, 0.6)
+    for _, v in ipairs(LoadFrame:GetDescendants()) do
+        if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("Frame") then
+            pcall(function()
+                Tween(v, {BackgroundTransparency = 1, TextTransparency = 1}, 0.5)
+            end)
         end
-    }
-end
+    end
+    task.wait(0.7)
+    LoadFrame:Destroy()
+end)
 
--- ░░ SECTION HEADER ░░
-local function SectionHeader(parent, text)
-    local f = New("Frame", {
-        Parent          = parent,
-        BackgroundTransparency = 1,
-        Size            = UDim2.new(1, 0, 0, 28),
-    })
-    New("TextLabel", {
-        Parent         = f,
-        Text           = text,
-        TextColor3     = C.accent,
-        Font           = Enum.Font.GothamBold,
-        TextSize       = 11,
-        Size           = UDim2.new(0.6, 0, 1, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-    })
-    New("Frame", {
-        Parent          = f,
-        Position        = UDim2.new(0.6, 8, 0.5, 0),
-        Size            = UDim2.new(0.4, -8, 0, 1),
-        BackgroundColor3= Color3.fromRGB(40, 40, 60),
-    })
-    return f
-end
+-- ══════════════════════════════════════════════════════════
+--              MAIN GUI FRAME
+-- ══════════════════════════════════════════════════════════
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 680, 0, 440)
+MainFrame.Position = UDim2.new(0.5, -340, 0.5, -220)
+MainFrame.BackgroundColor3 = COLORS.BG
+MainFrame.BorderSizePixel = 1
+MainFrame.BorderColor3 = COLORS.BORDER
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
 
--- ░░ CARD LABEL ░░
-local function CardLabel(parent, text, subtext)
-    local f = New("Frame", {
-        Parent          = parent,
-        BackgroundColor3= C.bgCard,
-        Size            = UDim2.new(1, 0, 0, 50),
-    })
-    MakeCorner(8, f)
-    MakePadding(8, 8, 12, 12, f)
-    MakeStroke(1, Color3.fromRGB(40,40,60), f)
+-- Animate in
+MainFrame.Position = UDim2.new(0.5, -340, -0.5, 0)
+task.delay(4.5, function()
+    Tween(MainFrame, {Position = UDim2.new(0.5, -340, 0.5, -220)}, 0.5, Enum.EasingStyle.Back)
+end)
 
-    New("TextLabel", {
-        Parent         = f,
-        Text           = text,
-        TextColor3     = C.textDim,
-        Font           = Enum.Font.Gotham,
-        TextSize       = 11,
-        Size           = UDim2.new(1, 0, 0, 16),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-    })
-    local val = New("TextLabel", {
-        Parent         = f,
-        Text           = subtext or "",
-        TextColor3     = C.text,
-        Font           = Enum.Font.GothamBold,
-        TextSize       = 14,
-        Position       = UDim2.new(0, 0, 0, 18),
-        Size           = UDim2.new(1, 0, 0, 20),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-    })
-    return f, val
-end
+-- TITLE BAR
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 42)
+TitleBar.BackgroundColor3 = COLORS.BG_DARK
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
 
--- ░░ BUTTON ░░
-local function MakeButton(parent, text, accent, callback)
-    local btn = New("TextButton", {
-        Parent          = parent,
-        Text            = text,
-        TextColor3      = C.white,
-        Font            = Enum.Font.GothamBold,
-        TextSize        = 13,
-        BackgroundColor3= accent or C.accentGlow,
-        Size            = UDim2.new(1, 0, 0, 36),
-    })
-    MakeCorner(8, btn)
-    MakeStroke(1, accent or C.accent, btn)
+-- Left gold accent line
+local GoldLine = Instance.new("Frame")
+GoldLine.Size = UDim2.new(0, 3, 1, 0)
+GoldLine.BackgroundColor3 = COLORS.ACCENT2
+GoldLine.BorderSizePixel = 0
+GoldLine.Parent = TitleBar
+
+local TitleIcon = Instance.new("TextLabel")
+TitleIcon.Size = UDim2.new(0, 32, 0, 32)
+TitleIcon.Position = UDim2.new(0, 12, 0, 5)
+TitleIcon.BackgroundTransparency = 1
+TitleIcon.Text = "🌱"
+TitleIcon.TextScaled = true
+TitleIcon.Font = Enum.Font.GothamBold
+TitleIcon.Parent = TitleBar
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(0, 200, 1, 0)
+TitleLabel.Position = UDim2.new(0, 48, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "AXL GARDEN 2"
+TitleLabel.TextColor3 = COLORS.ACCENT2
+TitleLabel.TextScaled = false
+TitleLabel.TextSize = 16
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = TitleBar
+
+local VIPBadge = Instance.new("TextLabel")
+VIPBadge.Size = UDim2.new(0, 50, 0, 22)
+VIPBadge.Position = UDim2.new(0, 252, 0, 10)
+VIPBadge.BackgroundColor3 = COLORS.ACCENT
+VIPBadge.BorderSizePixel = 0
+VIPBadge.Text = "VIP"
+VIPBadge.TextColor3 = COLORS.BG_DARK
+VIPBadge.TextScaled = true
+VIPBadge.Font = Enum.Font.GothamBold
+VIPBadge.Parent = TitleBar
+Instance.new("UICorner", VIPBadge).CornerRadius = UDim.new(0, 3)
+
+-- Window control buttons (macOS-style)
+local function MakeWinBtn(icon, xOff, bgColor)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 14, 0, 14)
+    btn.Position = UDim2.new(1, xOff, 0.5, -7)
+    btn.BackgroundColor3 = bgColor
+    btn.BorderSizePixel = 0
+    btn.Text = ""
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 8
+    btn.TextColor3 = COLORS.BG_DARK
+    btn.Parent = TitleBar
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(1, 0)
 
     btn.MouseEnter:Connect(function()
-        Tween(btn, TweenInfo.new(0.15), {BackgroundColor3 = C.accent})
+        btn.Text = icon
+        Tween(btn, {Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, xOff-1, 0.5, -8)}, 0.1)
     end)
     btn.MouseLeave:Connect(function()
-        Tween(btn, TweenInfo.new(0.15), {BackgroundColor3 = accent or C.accentGlow})
-    end)
-    btn.MouseButton1Click:Connect(function()
-        if callback then callback() end
+        btn.Text = ""
+        Tween(btn, {Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, xOff, 0.5, -7)}, 0.1)
     end)
     return btn
 end
 
--- ░░ DROPDOWN ░░
-local function MakeDropdown(parent, labelText, options, callback)
-    local selected = options[1] or ""
-    local open = false
+local CloseBtn   = MakeWinBtn("✕", -22, Color3.fromRGB(220,60,60))
+local MinBtn     = MakeWinBtn("−", -42, Color3.fromRGB(220,180,50))
 
-    local container = New("Frame", {
-        Parent          = parent,
-        BackgroundTransparency = 1,
-        Size            = UDim2.new(1, 0, 0, 44),
-        ClipsDescendants = false,
-        ZIndex          = 10,
-    })
+-- Minimize
+local ContentArea = Instance.new("Frame")
+ContentArea.Name = "ContentArea"
+ContentArea.Size = UDim2.new(1, 0, 1, -42)
+ContentArea.Position = UDim2.new(0, 0, 0, 42)
+ContentArea.BackgroundTransparency = 1
+ContentArea.Parent = MainFrame
 
-    local header = New("Frame", {
-        Parent          = container,
-        BackgroundColor3= C.bgCard,
-        Size            = UDim2.new(1, 0, 0, 44),
-        ZIndex          = 10,
-    })
-    MakeCorner(8, header)
-    MakeStroke(1, Color3.fromRGB(60,60,90), header)
-    MakePadding(0, 0, 12, 12, header)
+MinBtn.MouseButton1Click:Connect(function()
+    if State.isMinimized then
+        State.isMinimized = false
+        Tween(MainFrame, {Size = UDim2.new(0, 680, 0, 440)}, 0.3, Enum.EasingStyle.Back)
+    else
+        State.isMinimized = true
+        Tween(MainFrame, {Size = UDim2.new(0, 680, 0, 42)}, 0.3, Enum.EasingStyle.Quart)
+    end
+end)
 
-    New("TextLabel", {
-        Parent         = header,
-        Text           = labelText,
-        TextColor3     = C.textDim,
-        Font           = Enum.Font.Gotham,
-        TextSize       = 11,
-        Size           = UDim2.new(0.5, 0, 0.4, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        ZIndex         = 10,
-    })
+CloseBtn.MouseButton1Click:Connect(function()
+    Tween(MainFrame, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    task.wait(0.35)
+    ScreenGui:Destroy()
+    -- Clean up
+    State.droppedItemsToggle = false
+    State.droppedItemsLoop = false
+    State.autoHarvestToggle = false
+    State.autoProxyToggle = false
+    State.autoProxyLoop = false
+    State.seedPackToggle = false
+    State.seedPackLoop = false
+    ClearESP()
+end)
 
-    local selLabel = New("TextLabel", {
-        Parent         = header,
-        Text           = selected,
-        TextColor3     = C.text,
-        Font           = Enum.Font.GothamBold,
-        TextSize       = 13,
-        Position       = UDim2.new(0, 0, 0.45, 0),
-        Size           = UDim2.new(0.8, 0, 0.55, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        ZIndex         = 10,
-    })
+-- Drag
+local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
 
-    local arrow = New("TextLabel", {
-        Parent         = header,
-        Text           = "▼",
-        TextColor3     = C.accent,
-        Font           = Enum.Font.GothamBold,
-        TextSize       = 12,
-        Position       = UDim2.new(1, -30, 0.5, -8),
-        Size           = UDim2.new(0, 20, 0, 16),
-        BackgroundTransparency = 1,
-        ZIndex         = 10,
-    })
+-- Bottom border accent
+local BottomAccent = Instance.new("Frame")
+BottomAccent.Size = UDim2.new(1, 0, 0, 1)
+BottomAccent.Position = UDim2.new(0, 0, 1, -1)
+BottomAccent.BackgroundColor3 = COLORS.ACCENT2
+BottomAccent.BorderSizePixel = 0
+BottomAccent.Parent = MainFrame
 
-    local dropFrame = New("Frame", {
-        Parent          = container,
-        BackgroundColor3= C.bgCard,
-        Position        = UDim2.new(0, 0, 1, 4),
-        Size            = UDim2.new(1, 0, 0, 0),
-        ClipsDescendants= true,
-        ZIndex          = 20,
-        Visible         = false,
-    })
-    MakeCorner(8, dropFrame)
-    MakeStroke(1, Color3.fromRGB(60,60,90), dropFrame)
+-- ══════════════════════════════════════════════════════════
+--                    TAB BAR
+-- ══════════════════════════════════════════════════════════
+local TabBar = Instance.new("Frame")
+TabBar.Size = UDim2.new(1, 0, 0, 38)
+TabBar.Position = UDim2.new(0, 0, 0, 0)
+TabBar.BackgroundColor3 = COLORS.BG_DARK
+TabBar.BorderSizePixel = 0
+TabBar.Parent = ContentArea
 
-    local listLayout = New("UIListLayout", {
-        Parent          = dropFrame,
-        SortOrder       = Enum.SortOrder.LayoutOrder,
-        Padding         = UDim.new(0, 2),
-    })
-    MakePadding(4, 4, 4, 4, dropFrame)
+local TabSeparator = Instance.new("Frame")
+TabSeparator.Size = UDim2.new(1, 0, 0, 1)
+TabSeparator.Position = UDim2.new(0, 0, 1, -1)
+TabSeparator.BackgroundColor3 = COLORS.BORDER
+TabSeparator.BorderSizePixel = 0
+TabSeparator.Parent = TabBar
 
-    local totalH = 8
+-- Tab pages container
+local Pages = Instance.new("Frame")
+Pages.Size = UDim2.new(1, 0, 1, -38)
+Pages.Position = UDim2.new(0, 0, 0, 38)
+Pages.BackgroundTransparency = 1
+Pages.ClipsDescendants = true
+Pages.Parent = ContentArea
+
+local TabButtons = {}
+local TabPages = {}
+
+local TABS = {
+    {id="info",     icon="ℹ", labelKey="info_tab"},
+    {id="player",   icon="👤", labelKey="player_tab"},
+    {id="features", icon="⚡", labelKey="features_tab"},
+    {id="settings", icon="⚙", labelKey="settings_tab"},
+}
+
+local function MakePage(id)
+    local page = Instance.new("ScrollingFrame")
+    page.Name = id.."_page"
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.BackgroundTransparency = 1
+    page.BorderSizePixel = 0
+    page.ScrollBarThickness = 4
+    page.ScrollBarImageColor3 = COLORS.ACCENT
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    page.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    page.Visible = false
+    page.Parent = Pages
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 8)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Parent = page
+
+    local pad = Instance.new("UIPadding")
+    pad.PaddingLeft = UDim.new(0, 12)
+    pad.PaddingRight = UDim.new(0, 12)
+    pad.PaddingTop = UDim.new(0, 12)
+    pad.PaddingBottom = UDim.new(0, 12)
+    pad.Parent = page
+
+    return page
+end
+
+local function SwitchTab(id)
+    State.currentTab = id
+    for tabId, page in pairs(TabPages) do
+        page.Visible = (tabId == id)
+    end
+    for tabId, btn in pairs(TabButtons) do
+        if tabId == id then
+            Tween(btn, {BackgroundColor3 = COLORS.TAB_ACTIVE}, 0.15)
+            btn.TextColor3 = COLORS.ACCENT2
+        else
+            Tween(btn, {BackgroundColor3 = COLORS.TAB_IDLE}, 0.15)
+            btn.TextColor3 = COLORS.TEXT_DIM
+        end
+    end
+end
+
+local tabW = 1 / #TABS
+for i, tab in ipairs(TABS) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(tabW, -2, 1, -6)
+    btn.Position = UDim2.new((i-1)*tabW, 1, 0, 3)
+    btn.BackgroundColor3 = COLORS.TAB_IDLE
+    btn.BorderSizePixel = 0
+    btn.Text = tab.icon .. " " .. T(tab.labelKey)
+    btn.TextColor3 = COLORS.TEXT_DIM
+    btn.TextScaled = false
+    btn.TextSize = 13
+    btn.Font = Enum.Font.GothamBold
+    btn.AutoButtonColor = false
+    btn.Parent = TabBar
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+
+    local underline = Instance.new("Frame")
+    underline.Size = UDim2.new(0, 0, 0, 2)
+    underline.Position = UDim2.new(0.5, 0, 1, 0)
+    underline.AnchorPoint = Vector2.new(0.5, 0)
+    underline.BackgroundColor3 = COLORS.ACCENT2
+    underline.BorderSizePixel = 0
+    underline.Parent = btn
+
+    TabButtons[tab.id] = btn
+    TabPages[tab.id] = MakePage(tab.id)
+
+    btn.MouseButton1Click:Connect(function()
+        SwitchTab(tab.id)
+        Tween(underline, {Size = UDim2.new(0.8, 0, 0, 2)}, 0.2)
+        task.delay(0.3, function()
+            if State.currentTab ~= tab.id then
+                Tween(underline, {Size = UDim2.new(0, 0, 0, 2)}, 0.2)
+            end
+        end)
+    end)
+end
+
+-- ══════════════════════════════════════════════════════════
+--                    UI HELPERS
+-- ══════════════════════════════════════════════════════════
+local function MakeCard(parent, layoutOrder)
+    local card = Instance.new("Frame")
+    card.Size = UDim2.new(1, 0, 0, 0)
+    card.AutomaticSize = Enum.AutomaticSize.Y
+    card.BackgroundColor3 = COLORS.BG_CARD
+    card.BorderSizePixel = 1
+    card.BorderColor3 = Color3.fromRGB(35, 35, 35)
+    card.LayoutOrder = layoutOrder or 0
+    card.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = card
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 6)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Parent = card
+
+    local pad = Instance.new("UIPadding")
+    pad.PaddingLeft = UDim.new(0, 12)
+    pad.PaddingRight = UDim.new(0, 12)
+    pad.PaddingTop = UDim.new(0, 10)
+    pad.PaddingBottom = UDim.new(0, 10)
+    pad.Parent = card
+
+    return card
+end
+
+local function MakeSectionTitle(parent, text, layoutOrder)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 0, 22)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = COLORS.ACCENT2
+    label.TextScaled = false
+    label.TextSize = 12
+    label.Font = Enum.Font.GothamBold
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.LayoutOrder = layoutOrder or 0
+    label.Parent = parent
+    return label
+end
+
+local function MakeRow(parent, labelText, valueText, layoutOrder)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1, 0, 0, 26)
+    row.BackgroundTransparency = 1
+    row.LayoutOrder = layoutOrder or 0
+    row.Parent = parent
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.45, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = labelText
+    lbl.TextColor3 = COLORS.TEXT_DIM
+    lbl.TextScaled = false
+    lbl.TextSize = 12
+    lbl.Font = Enum.Font.Gotham
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = row
+
+    local val = Instance.new("TextLabel")
+    val.Size = UDim2.new(0.55, 0, 1, 0)
+    val.Position = UDim2.new(0.45, 0, 0, 0)
+    val.BackgroundTransparency = 1
+    val.Text = valueText or ""
+    val.TextColor3 = COLORS.TEXT
+    val.TextScaled = false
+    val.TextSize = 12
+    val.Font = Enum.Font.GothamBold
+    val.TextXAlignment = Enum.TextXAlignment.Right
+    val.Parent = row
+
+    return row, val
+end
+
+local function MakeButton(parent, text, layoutOrder)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 34)
+    btn.BackgroundColor3 = COLORS.BTN_DARK
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = COLORS.BORDER
+    btn.Text = text
+    btn.TextColor3 = COLORS.TEXT
+    btn.TextScaled = false
+    btn.TextSize = 13
+    btn.Font = Enum.Font.GothamBold
+    btn.AutoButtonColor = false
+    btn.LayoutOrder = layoutOrder or 0
+    btn.Parent = parent
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
+
+    btn.MouseEnter:Connect(function()
+        Tween(btn, {BackgroundColor3 = Color3.fromRGB(25,25,25), BorderColor3 = COLORS.ACCENT2}, 0.15)
+    end)
+    btn.MouseLeave:Connect(function()
+        Tween(btn, {BackgroundColor3 = COLORS.BTN_DARK, BorderColor3 = COLORS.BORDER}, 0.15)
+    end)
+    btn.MouseButton1Click:Connect(function()
+        Tween(btn, {BackgroundColor3 = COLORS.ACCENT, TextColor3 = COLORS.BG_DARK}, 0.08)
+        task.delay(0.12, function()
+            Tween(btn, {BackgroundColor3 = COLORS.BTN_DARK, TextColor3 = COLORS.TEXT}, 0.12)
+        end)
+    end)
+    return btn
+end
+
+local function MakeToggle(parent, labelText, initialState, layoutOrder, callback)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1, 0, 0, 34)
+    row.BackgroundColor3 = COLORS.BTN_DARK
+    row.BorderSizePixel = 1
+    row.BorderColor3 = Color3.fromRGB(35,35,35)
+    row.LayoutOrder = layoutOrder or 0
+    row.Parent = parent
+    Instance.new("UICorner", row).CornerRadius = UDim.new(0, 5)
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, -70, 1, 0)
+    lbl.Position = UDim2.new(0, 10, 0, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = labelText
+    lbl.TextColor3 = COLORS.TEXT
+    lbl.TextScaled = false
+    lbl.TextSize = 12
+    lbl.Font = Enum.Font.Gotham
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = row
+
+    local toggleBG = Instance.new("Frame")
+    toggleBG.Size = UDim2.new(0, 44, 0, 22)
+    toggleBG.Position = UDim2.new(1, -54, 0.5, -11)
+    toggleBG.BackgroundColor3 = initialState and COLORS.TOGGLE_ON or COLORS.TOGGLE_OFF
+    toggleBG.BorderSizePixel = 0
+    toggleBG.Parent = row
+    Instance.new("UICorner", toggleBG).CornerRadius = UDim.new(1, 0)
+
+    local toggleKnob = Instance.new("Frame")
+    toggleKnob.Size = UDim2.new(0, 18, 0, 18)
+    toggleKnob.Position = initialState and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
+    toggleKnob.BackgroundColor3 = COLORS.TEXT
+    toggleKnob.BorderSizePixel = 0
+    toggleKnob.Parent = toggleBG
+    Instance.new("UICorner", toggleKnob).CornerRadius = UDim.new(1, 0)
+
+    local currentState = initialState
+    local toggleBtn = Instance.new("TextButton")
+    toggleBtn.Size = UDim2.new(1, 0, 1, 0)
+    toggleBtn.BackgroundTransparency = 1
+    toggleBtn.Text = ""
+    toggleBtn.Parent = row
+
+    toggleBtn.MouseButton1Click:Connect(function()
+        currentState = not currentState
+        Tween(toggleBG, {BackgroundColor3 = currentState and COLORS.TOGGLE_ON or COLORS.TOGGLE_OFF}, 0.2)
+        Tween(toggleKnob, {Position = currentState and UDim2.new(1,-20,0.5,-9) or UDim2.new(0,2,0.5,-9)}, 0.2)
+        if callback then callback(currentState) end
+    end)
+    return row, function() return currentState end
+end
+
+local function MakeDropdown(parent, options, selected, layoutOrder, callback)
+    local holder = Instance.new("Frame")
+    holder.Size = UDim2.new(1, 0, 0, 34)
+    holder.BackgroundTransparency = 1
+    holder.LayoutOrder = layoutOrder or 0
+    holder.ClipsDescendants = false
+    holder.Parent = parent
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 34)
+    btn.BackgroundColor3 = COLORS.BTN_DARK
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = COLORS.BORDER
+    btn.Text = "▼  " .. selected
+    btn.TextColor3 = COLORS.TEXT
+    btn.TextSize = 12
+    btn.Font = Enum.Font.GothamBold
+    btn.AutoButtonColor = false
+    btn.ZIndex = 5
+    btn.Parent = holder
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
+
+    local dropFrame = Instance.new("Frame")
+    dropFrame.Size = UDim2.new(1, 0, 0, 0)
+    dropFrame.Position = UDim2.new(0, 0, 0, 36)
+    dropFrame.BackgroundColor3 = Color3.fromRGB(12,12,12)
+    dropFrame.BorderSizePixel = 1
+    dropFrame.BorderColor3 = COLORS.BORDER
+    dropFrame.ClipsDescendants = true
+    dropFrame.ZIndex = 10
+    dropFrame.Visible = false
+    dropFrame.Parent = holder
+    Instance.new("UICorner", dropFrame).CornerRadius = UDim.new(0, 5)
+
+    local dLayout = Instance.new("UIListLayout")
+    dLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    dLayout.Parent = dropFrame
+
+    local isOpen = false
+    local currentSel = selected
+
     for i, opt in ipairs(options) do
-        local optBtn = New("TextButton", {
-            Parent          = dropFrame,
-            Text            = opt,
-            TextColor3      = C.text,
-            Font            = Enum.Font.GothamMedium,
-            TextSize        = 13,
-            BackgroundColor3= Color3.fromRGB(25,25,40),
-            Size            = UDim2.new(1, 0, 0, 32),
-            ZIndex          = 20,
-        })
-        MakeCorner(6, optBtn)
-        totalH = totalH + 34
+        local optBtn = Instance.new("TextButton")
+        optBtn.Size = UDim2.new(1, 0, 0, 30)
+        optBtn.BackgroundColor3 = Color3.fromRGB(12,12,12)
+        optBtn.BorderSizePixel = 0
+        optBtn.Text = opt
+        optBtn.TextColor3 = COLORS.TEXT
+        optBtn.TextSize = 12
+        optBtn.Font = Enum.Font.Gotham
+        optBtn.AutoButtonColor = false
+        optBtn.LayoutOrder = i
+        optBtn.ZIndex = 11
+        optBtn.Parent = dropFrame
 
         optBtn.MouseEnter:Connect(function()
-            Tween(optBtn, TweenInfo.new(0.1), {BackgroundColor3 = C.accentGlow})
+            Tween(optBtn, {BackgroundColor3 = Color3.fromRGB(22,22,22)}, 0.1)
         end)
         optBtn.MouseLeave:Connect(function()
-            Tween(optBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25,25,40)})
+            Tween(optBtn, {BackgroundColor3 = Color3.fromRGB(12,12,12)}, 0.1)
         end)
         optBtn.MouseButton1Click:Connect(function()
-            selected = opt
-            selLabel.Text = opt
-            open = false
-            Tween(dropFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 0)})
-            task.wait(0.21)
+            currentSel = opt
+            btn.Text = "▼  " .. opt
+            isOpen = false
+            Tween(dropFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.15)
+            task.wait(0.16)
             dropFrame.Visible = false
             if callback then callback(opt) end
         end)
     end
 
-    local headerBtn = New("TextButton", {
-        Parent               = header,
-        Text                 = "",
-        Size                 = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        ZIndex               = 15,
-    })
-    headerBtn.MouseButton1Click:Connect(function()
-        open = not open
-        if open then
+    btn.MouseButton1Click:Connect(function()
+        isOpen = not isOpen
+        if isOpen then
             dropFrame.Visible = true
-            dropFrame.Size = UDim2.new(1, 0, 0, 0)
-            Tween(dropFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, totalH)})
-            Tween(arrow, TweenInfo.new(0.2), {Rotation = 180})
+            local targetH = math.min(#options * 30, 150)
+            Tween(dropFrame, {Size = UDim2.new(1, 0, 0, targetH)}, 0.2, Enum.EasingStyle.Back)
         else
-            Tween(dropFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 0)})
-            Tween(arrow, TweenInfo.new(0.2), {Rotation = 0})
-            task.wait(0.21)
+            Tween(dropFrame, {Size = UDim2.new(1, 0, 0, 0)}, 0.15)
+            task.wait(0.16)
             dropFrame.Visible = false
         end
     end)
-
-    return container, function() return selected end
+    return holder
 end
 
--- ░░ SPACER ░░
-local function Spacer(parent, h)
-    New("Frame", {
-        Parent = parent,
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1, 0, 0, h or 8),
-    })
+local function MakeLinkRow(parent, icon, labelText, url, layoutOrder)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1, 0, 0, 36)
+    row.BackgroundColor3 = COLORS.BTN_DARK
+    row.BorderSizePixel = 1
+    row.BorderColor3 = Color3.fromRGB(35,35,35)
+    row.LayoutOrder = layoutOrder or 0
+    row.Parent = parent
+    Instance.new("UICorner", row).CornerRadius = UDim.new(0, 5)
+
+    local iconL = Instance.new("TextLabel")
+    iconL.Size = UDim2.new(0, 30, 1, 0)
+    iconL.BackgroundTransparency = 1
+    iconL.Text = icon
+    iconL.TextScaled = true
+    iconL.Font = Enum.Font.GothamBold
+    iconL.Parent = row
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, -120, 1, 0)
+    lbl.Position = UDim2.new(0, 32, 0, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = labelText
+    lbl.TextColor3 = COLORS.TEXT
+    lbl.TextSize = 12
+    lbl.Font = Enum.Font.Gotham
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = row
+
+    local copyBtn = Instance.new("TextButton")
+    copyBtn.Size = UDim2.new(0, 70, 0, 26)
+    copyBtn.Position = UDim2.new(1, -78, 0.5, -13)
+    copyBtn.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    copyBtn.BorderSizePixel = 1
+    copyBtn.BorderColor3 = COLORS.BORDER
+    copyBtn.Text = T("copy")
+    copyBtn.TextColor3 = COLORS.TEXT
+    copyBtn.TextSize = 11
+    copyBtn.Font = Enum.Font.GothamBold
+    copyBtn.AutoButtonColor = false
+    copyBtn.Parent = row
+    Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 4)
+
+    copyBtn.MouseButton1Click:Connect(function()
+        CopyToClipboard(url)
+        copyBtn.Text = T("copied")
+        copyBtn.TextColor3 = COLORS.SUCCESS
+        task.delay(1.5, function()
+            copyBtn.Text = T("copy")
+            copyBtn.TextColor3 = COLORS.TEXT
+        end)
+    end)
+    return row
 end
 
--- ════════════════════════════════════════════════════════
---                 BUILD LANGUAGE SELECTOR
--- ════════════════════════════════════════════════════════
-local ScreenGui = New("ScreenGui", {
-    Name            = "AXL_GARDEN_2",
-    ResetOnSpawn    = false,
-    ZIndexBehavior  = Enum.ZIndexBehavior.Sibling,
-    IgnoreGuiInset  = true,
-})
-pcall(function() ScreenGui.Parent = CoreGui end)
-if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer.PlayerGui end
+-- ══════════════════════════════════════════════════════════
+--                    INFO PAGE
+-- ══════════════════════════════════════════════════════════
+local infoPage = TabPages["info"]
 
--- ░░ LOADING SCREEN ░░
-local LoadScreen = New("Frame", {
-    Parent          = ScreenGui,
-    Size            = UDim2.new(1, 0, 1, 0),
-    BackgroundColor3= Color3.fromRGB(0, 0, 0),
-    ZIndex          = 100,
-})
+-- Copyright card
+local copyrightCard = MakeCard(infoPage, 1)
 
--- Animated glow behind logo
-local glowCircle = New("Frame", {
-    Parent          = LoadScreen,
-    Size            = UDim2.new(0, 300, 0, 300),
-    Position        = UDim2.new(0.5, -150, 0.5, -180),
-    BackgroundColor3= C.accentGlow,
-    BackgroundTransparency = 0.85,
-    ZIndex          = 100,
-})
-MakeCorner(150, glowCircle)
+MakeSectionTitle(copyrightCard, "© " .. T("copyright"), 1)
 
-local titleLoad = New("TextLabel", {
-    Parent         = LoadScreen,
-    Text           = "AXL GARDEN 2",
-    TextColor3     = C.white,
-    Font           = Enum.Font.GothamBlack,
-    TextSize       = 42,
-    Position       = UDim2.new(0, 0, 0.35, 0),
-    Size           = UDim2.new(1, 0, 0, 60),
-    BackgroundTransparency = 1,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    ZIndex         = 101,
-})
-New("TextLabel", {
-    Parent         = LoadScreen,
-    Text           = "🌿 VIP SCRIPT",
-    TextColor3     = C.accent,
-    Font           = Enum.Font.GothamBold,
-    TextSize       = 18,
-    Position       = UDim2.new(0, 0, 0.47, 0),
-    Size           = UDim2.new(1, 0, 0, 30),
-    BackgroundTransparency = 1,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    ZIndex         = 101,
-})
+local divInfo = Instance.new("Frame")
+divInfo.Size = UDim2.new(1, 0, 0, 1)
+divInfo.BackgroundColor3 = Color3.fromRGB(30,30,30)
+divInfo.BorderSizePixel = 0
+divInfo.LayoutOrder = 2
+divInfo.Parent = copyrightCard
 
--- Language picker
-local langTitle = New("TextLabel", {
-    Parent         = LoadScreen,
-    Text           = "Choose Language / اختر اللغة / زمان هەڵبژێرە",
-    TextColor3     = C.textDim,
-    Font           = Enum.Font.GothamMedium,
-    TextSize       = 14,
-    Position       = UDim2.new(0, 0, 0.58, 0),
-    Size           = UDim2.new(1, 0, 0, 24),
-    BackgroundTransparency = 1,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    ZIndex         = 101,
-})
+-- Version row
+local _, versionVal = MakeRow(copyrightCard, "Version", "2.0 VIP", 3)
+versionVal.TextColor3 = COLORS.ACCENT2
 
-local langRow = New("Frame", {
-    Parent          = LoadScreen,
-    Position        = UDim2.new(0.5, -180, 0.65, 0),
-    Size            = UDim2.new(0, 360, 0, 48),
-    BackgroundTransparency = 1,
-    ZIndex          = 101,
-})
-New("UIListLayout", {
-    Parent        = langRow,
-    FillDirection = Enum.FillDirection.Horizontal,
-    HorizontalAlignment = Enum.HorizontalAlignment.Center,
-    Padding       = UDim.new(0, 10),
-    SortOrder     = Enum.SortOrder.LayoutOrder,
-})
+local _, devVal = MakeRow(copyrightCard, "Developer", "@ex_axl", 4)
+devVal.TextColor3 = COLORS.ACCENT
 
-local function LangBtn(text, code)
-    local b = New("TextButton", {
-        Parent          = langRow,
-        Text            = text,
-        TextColor3      = C.white,
-        Font            = Enum.Font.GothamBold,
-        TextSize        = 14,
-        BackgroundColor3= C.accentGlow,
-        Size            = UDim2.new(0, 106, 1, 0),
-        ZIndex          = 101,
-    })
-    MakeCorner(10, b)
-    MakeStroke(2, C.accent, b)
-    return b, code
-end
+local _, gameVal = MakeRow(copyrightCard, "Game", "Grow A Garden", 5)
 
-local btnEN, _ = LangBtn("English 🇬🇧", "EN")
-local btnAR, _ = LangBtn("العربية 🇸🇦", "AR")
-local btnKU, _ = LangBtn("کوردی 🟢",   "KU")
+-- Links card
+local linksCard = MakeCard(infoPage, 2)
+MakeSectionTitle(linksCard, "🔗 Links", 1)
 
--- Progress bar
-local progBg = New("Frame", {
-    Parent          = LoadScreen,
-    Position        = UDim2.new(0.5, -150, 0.82, 0),
-    Size            = UDim2.new(0, 300, 0, 6),
-    BackgroundColor3= Color3.fromRGB(30,30,50),
-    ZIndex          = 101,
-})
-MakeCorner(3, progBg)
-local progFill = New("Frame", {
-    Parent          = progBg,
-    Size            = UDim2.new(0, 0, 1, 0),
-    BackgroundColor3= C.accent,
-    ZIndex          = 102,
-})
-MakeCorner(3, progFill)
+MakeLinkRow(linksCard, "💬", "discord.gg/rb7hCqvTD6", "https://discord.gg/rb7hCqvTD6", 2)
+MakeLinkRow(linksCard, "📱", "t.me/axcmy", "https://t.me/axcmy", 3)
+MakeLinkRow(linksCard, "📱", "t.me/mmcmy", "https://t.me/mmcmy", 4)
 
-local progLabel = New("TextLabel", {
-    Parent         = LoadScreen,
-    Text           = "Loading... 0%",
-    TextColor3     = C.textDim,
-    Font           = Enum.Font.Gotham,
-    TextSize       = 12,
-    Position       = UDim2.new(0, 0, 0.85, 0),
-    Size           = UDim2.new(1, 0, 0, 20),
-    BackgroundTransparency = 1,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    ZIndex         = 101,
-})
+-- Info note card
+local noteCard = MakeCard(infoPage, 3)
+local noteLabel = Instance.new("TextLabel")
+noteLabel.Size = UDim2.new(1, 0, 0, 0)
+noteLabel.AutomaticSize = Enum.AutomaticSize.Y
+noteLabel.BackgroundTransparency = 1
+noteLabel.Text = "⚠️ This script is for educational use only.\nAll rights reserved — AXL GARDEN 2\nTelegram: @axcmy | @mmcmy"
+noteLabel.TextColor3 = COLORS.TEXT_DIM
+noteLabel.TextSize = 11
+noteLabel.Font = Enum.Font.Gotham
+noteLabel.TextXAlignment = Enum.TextXAlignment.Left
+noteLabel.TextWrapped = true
+noteLabel.LayoutOrder = 2
+noteLabel.Parent = noteCard
 
-New("TextLabel", {
-    Parent         = LoadScreen,
-    Text           = "t.me/axcmy  |  t.me/mmcmy  |  discord.gg/rb7hCqvTD6",
-    TextColor3     = Color3.fromRGB(80,80,110),
-    Font           = Enum.Font.Gotham,
-    TextSize       = 11,
-    Position       = UDim2.new(0, 0, 0.93, 0),
-    Size           = UDim2.new(1, 0, 0, 20),
-    BackgroundTransparency = 1,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    ZIndex         = 101,
-})
+-- ══════════════════════════════════════════════════════════
+--                    PLAYER PAGE
+-- ══════════════════════════════════════════════════════════
+local playerPage = TabPages["player"]
 
--- Glow pulse animation
-task.spawn(function()
-    while LoadScreen.Parent do
-        Tween(glowCircle, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {BackgroundTransparency = 0.7})
-        task.wait(1.5)
-        Tween(glowCircle, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {BackgroundTransparency = 0.9})
-        task.wait(1.5)
+local playerCard = MakeCard(playerPage, 1)
+MakeSectionTitle(playerCard, "👤 " .. T("player_info"), 1)
+
+local _, unameVal   = MakeRow(playerCard, T("username"),  LocalPlayer.Name, 2)
+local _, uidVal     = MakeRow(playerCard, T("userid"),    tostring(LocalPlayer.UserId), 3)
+local _, gameVal2   = MakeRow(playerCard, T("gamemode"),  "Grow A Garden", 4)
+
+local plotCard = MakeCard(playerPage, 2)
+MakeSectionTitle(plotCard, "🌿 " .. T("plot_finder"), 1)
+
+local _, myPlotVal = MakeRow(plotCard, T("your_plot"), T("not_found"), 2)
+myPlotVal.TextColor3 = COLORS.ACCENT2
+
+-- Plot dropdown
+local plotOptions = {}
+for i = 1, 8 do table.insert(plotOptions, "Plot"..i) end
+
+MakeSectionTitle(plotCard, T("navigate_to"), 3)
+local plotDropdown = MakeDropdown(plotCard, plotOptions, "Plot1", 4, function(opt)
+    State.selectedPlot = opt
+    TeleportToPlot(opt)
+end)
+
+local findPlotBtn = MakeButton(plotCard, "🔍 " .. T("plot_finder"), 5)
+findPlotBtn.MouseButton1Click:Connect(function()
+    local plotName, dist = FindMyPlot()
+    if plotName then
+        State.myPlot = plotName
+        myPlotVal.Text = plotName .. (dist and string.format(" (%.0fm)", dist) or "")
+        Notify(T("found_in") .. " " .. plotName)
+    else
+        myPlotVal.Text = T("not_found")
     end
 end)
 
--- ════════════════════════════════════════════════════════
---              MAIN GUI (built after language chosen)
--- ════════════════════════════════════════════════════════
-local MainBuilt = false
-
-local function BuildMainGUI()
-    if MainBuilt then return end
-    MainBuilt = true
-
-    -- Animate progress bar
-    task.spawn(function()
-        for i = 1, 100 do
-            Tween(progFill, TweenInfo.new(0.03), {Size = UDim2.new(i/100, 0, 1, 0)})
-            progLabel.Text = (LANG == "AR" and "جاري التحميل... " or LANG == "KU" and "باركردن... " or "Loading... ") .. i .. "%"
-            task.wait(0.03)
-        end
-        task.wait(0.4)
-        Tween(LoadScreen, TweenInfo.new(0.6, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
-        for _, v in pairs(LoadScreen:GetChildren()) do
-            if v:IsA("GuiObject") then
-                Tween(v, TweenInfo.new(0.4), {BackgroundTransparency = 1})
-                pcall(function() Tween(v, TweenInfo.new(0.4), {TextTransparency = 1}) end)
+-- Auto find plot loop
+task.spawn(function()
+    while true do
+        local plotName, dist = FindMyPlot()
+        if plotName then
+            State.myPlot = plotName
+            if myPlotVal and myPlotVal.Parent then
+                myPlotVal.Text = plotName .. (dist and string.format(" (%.0fm)", dist) or "")
             end
         end
-        task.wait(0.65)
-        LoadScreen:Destroy()
-    end)
-
-    -- ░░ MAIN WINDOW ░░
-    local MainFrame = New("Frame", {
-        Parent          = ScreenGui,
-        BackgroundColor3= C.bg,
-        Size            = UDim2.new(0, 480, 0, 520),
-        Position        = UDim2.new(0.5, -240, 0.5, -260),
-        ClipsDescendants= false,
-        ZIndex          = 2,
-    })
-    MakeCorner(14, MainFrame)
-    MakeStroke(1.5, C.border, MainFrame)
-
-    -- Shadow
-    local shadow = New("Frame", {
-        Parent          = MainFrame,
-        BackgroundColor3= Color3.fromRGB(0,0,0),
-        Size            = UDim2.new(1, 20, 1, 20),
-        Position        = UDim2.new(0, -10, 0, 10),
-        BackgroundTransparency = 0.6,
-        ZIndex          = 1,
-    })
-    MakeCorner(16, shadow)
-
-    -- Title bar
-    local TitleBar = New("Frame", {
-        Parent          = MainFrame,
-        BackgroundColor3= C.bgPanel,
-        Size            = UDim2.new(1, 0, 0, 48),
-        ZIndex          = 3,
-    })
-    MakeCorner(14, TitleBar)
-    -- cover bottom corners
-    New("Frame", {
-        Parent          = TitleBar,
-        BackgroundColor3= C.bgPanel,
-        Position        = UDim2.new(0, 0, 0.5, 0),
-        Size            = UDim2.new(1, 0, 0.5, 0),
-        ZIndex          = 3,
-    })
-
-    -- Logo dot
-    local logoDot = New("Frame", {
-        Parent          = TitleBar,
-        Size            = UDim2.new(0, 10, 0, 10),
-        Position        = UDim2.new(0, 16, 0.5, -5),
-        BackgroundColor3= C.accent,
-        ZIndex          = 4,
-    })
-    MakeCorner(5, logoDot)
-
-    New("TextLabel", {
-        Parent         = TitleBar,
-        Text           = "AXL GARDEN 2",
-        TextColor3     = C.white,
-        Font           = Enum.Font.GothamBlack,
-        TextSize       = 17,
-        Position       = UDim2.new(0, 34, 0, 0),
-        Size           = UDim2.new(0.5, 0, 1, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        ZIndex         = 4,
-    })
-    New("TextLabel", {
-        Parent         = TitleBar,
-        Text           = "🌿 VIP",
-        TextColor3     = C.gold,
-        Font           = Enum.Font.GothamBold,
-        TextSize       = 12,
-        Position       = UDim2.new(0, 34, 0, 28),
-        Size           = UDim2.new(0.3, 0, 0, 16),
-        BackgroundTransparency = 1,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        ZIndex         = 4,
-    })
-
-    -- Minimize / Close
-    local minimized = false
-    local ContentArea
-
-    local function makeCtrlBtn(text, xOff, color, cb)
-        local b = New("TextButton", {
-            Parent          = TitleBar,
-            Text            = text,
-            TextColor3      = color,
-            Font            = Enum.Font.GothamBold,
-            TextSize        = 14,
-            BackgroundColor3= Color3.fromRGB(30,30,50),
-            Size            = UDim2.new(0, 28, 0, 28),
-            Position        = UDim2.new(1, xOff, 0.5, -14),
-            ZIndex          = 5,
-        })
-        MakeCorner(6, b)
-        b.MouseButton1Click:Connect(cb)
-        return b
+        task.wait(3)
     end
+end)
 
-    makeCtrlBtn("✕", -12, C.red, function()
-        Tween(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0,480,0,0), BackgroundTransparency=1})
-        task.wait(0.35)
-        MainFrame:Destroy()
-    end)
+-- ══════════════════════════════════════════════════════════
+--                    FEATURES PAGE
+-- ══════════════════════════════════════════════════════════
+local featPage = TabPages["features"]
 
-    local minBtn = makeCtrlBtn("─", -46, C.textDim, function()
-        minimized = not minimized
-        if minimized then
-            Tween(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0,480,0,48)})
-        else
-            Tween(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0,480,0,520)})
-        end
-    end)
+-- ─── Feature 1: Gardens / Plot Finder ───
+local gCard = MakeCard(featPage, 1)
+MakeSectionTitle(gCard, "🌱 Feat 1 — Gardens / Plot Finder", 1)
+MakeSectionTitle(gCard, "Select & Navigate to any Plot (1-8)", 2)
 
-    -- Drag
-    local dragging, dragStart, startPos = false, nil, nil
-    TitleBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging  = true
-            dragStart = input.Position
-            startPos  = MainFrame.Position
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            MainFrame.Position = UDim2.new(
-                startPos.X.Scale, startPos.X.Offset + delta.X,
-                startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            )
-        end
-    end)
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
+local gDrop = MakeDropdown(gCard, plotOptions, "Plot1", 3, function(opt)
+    TeleportToPlot(opt)
+end)
 
-    -- ░░ TAB BAR ░░
-    local TabBar = New("Frame", {
-        Parent          = MainFrame,
-        BackgroundColor3= C.bgPanel,
-        Position        = UDim2.new(0, 0, 0, 48),
-        Size            = UDim2.new(1, 0, 0, 40),
-        ZIndex          = 3,
-    })
-    New("UIListLayout", {
-        Parent        = TabBar,
-        FillDirection = Enum.FillDirection.Horizontal,
-        SortOrder     = Enum.SortOrder.LayoutOrder,
-    })
-
-    ContentArea = New("ScrollingFrame", {
-        Parent                  = MainFrame,
-        BackgroundColor3        = C.bg,
-        Position                = UDim2.new(0, 0, 0, 88),
-        Size                    = UDim2.new(1, 0, 1, -88),
-        CanvasSize              = UDim2.new(0, 0, 0, 0),
-        AutomaticCanvasSize     = Enum.AutomaticSize.Y,
-        ScrollBarThickness      = 3,
-        ScrollBarImageColor3    = C.accent,
-        ClipsDescendants        = true,
-        ZIndex                  = 3,
-    })
-    MakePadding(12, 12, 12, 12, ContentArea)
-    New("UIListLayout", {
-        Parent    = ContentArea,
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Padding   = UDim.new(0, 8),
-    })
-
-    -- Notification holder (bottom right)
-    NotifHolder = New("Frame", {
-        Parent          = ScreenGui,
-        Position        = UDim2.new(1, -280, 1, -20),
-        Size            = UDim2.new(0, 260, 0, 0),
-        AnchorPoint     = Vector2.new(0, 1),
-        BackgroundTransparency = 1,
-        ZIndex          = 50,
-        AutomaticSize   = Enum.AutomaticSize.Y,
-    })
-    New("UIListLayout", {
-        Parent           = NotifHolder,
-        SortOrder        = Enum.SortOrder.LayoutOrder,
-        VerticalAlignment= Enum.VerticalAlignment.Bottom,
-        Padding          = UDim.new(0, 6),
-    })
-
-    -- ░░ TAB SYSTEM ░░
-    local tabs = {}
-    local tabPages = {}
-    local activeTab = nil
-
-    local tabDefs = {
-        {key="info",     icon="ℹ️",  label=T("tabInfo")},
-        {key="player",   icon="👤", label=T("tabPlayer")},
-        {key="features", icon="⚡", label=T("tabFeatures")},
-        {key="settings", icon="⚙️", label=T("tabSettings")},
-    }
-
-    local function setTab(key)
-        for k, page in pairs(tabPages) do
-            page.Visible = (k == key)
-        end
-        for k, tb in pairs(tabs) do
-            Tween(tb, TweenInfo.new(0.15), {
-                BackgroundColor3 = (k == key) and C.tabActive or C.tabInact,
-                TextColor3       = (k == key) and C.accent   or C.textDim,
-            })
-        end
-        activeTab = key
+local gFindBtn = MakeButton(gCard, "📍 Find My Plot Now", 4)
+gFindBtn.MouseButton1Click:Connect(function()
+    local p, d = FindMyPlot()
+    if p then
+        Notify("You are at: " .. p)
+    else
+        Notify(T("not_found"))
     end
+end)
 
-    for i, def in ipairs(tabDefs) do
-        local tb = New("TextButton", {
-            Parent          = TabBar,
-            Text            = def.icon .. " " .. def.label,
-            TextColor3      = C.textDim,
-            Font            = Enum.Font.GothamBold,
-            TextSize        = 11,
-            BackgroundColor3= C.tabInact,
-            Size            = UDim2.new(0.25, 0, 1, 0),
-            ZIndex          = 4,
-        })
-        tabs[def.key] = tb
+-- ─── Feature 2: Dropped Items ───
+local diCard = MakeCard(featPage, 2)
+MakeSectionTitle(diCard, "📦 Feat 2 — " .. T("dropped_items"), 1)
 
-        local page = New("Frame", {
-            Parent          = ContentArea,
-            BackgroundTransparency = 1,
-            Size            = UDim2.new(1, 0, 0, 0),
-            AutomaticSize   = Enum.AutomaticSize.Y,
-            Visible         = false,
-            LayoutOrder     = i,
-        })
-        New("UIListLayout", {
-            Parent    = page,
-            SortOrder = Enum.SortOrder.LayoutOrder,
-            Padding   = UDim.new(0, 8),
-        })
-        tabPages[def.key] = page
-
-        tb.MouseButton1Click:Connect(function() setTab(def.key) end)
+MakeToggle(diCard, T("dropped_toggle"), false, 2, function(state)
+    State.droppedItemsToggle = state
+    if state then
+        StartDroppedItemsLoop()
+        Notify("DroppedItems Collector: ON")
+    else
+        State.droppedItemsLoop = false
+        Notify("DroppedItems Collector: OFF")
     end
+end)
 
-    -- ════════════════════════════════
-    --  TAB: INFO
-    -- ════════════════════════════════
-    do
-        local p = tabPages["info"]
+-- ─── Feature 3: Wild Pet Spawns ESP ───
+local wpCard = MakeCard(featPage, 3)
+MakeSectionTitle(wpCard, "🐾 Feat 3 — " .. T("wild_pets"), 1)
 
-        -- Banner
-        local banner = New("Frame", {
-            Parent          = p,
-            BackgroundColor3= C.accentGlow,
-            Size            = UDim2.new(1, 0, 0, 80),
-        })
-        MakeCorner(10, banner)
-        New("TextLabel", {
-            Parent         = banner,
-            Text           = "🌿 AXL GARDEN 2",
-            TextColor3     = C.white,
-            Font           = Enum.Font.GothamBlack,
-            TextSize       = 22,
-            Size           = UDim2.new(1, 0, 0.55, 0),
-            BackgroundTransparency = 1,
-            TextXAlignment = Enum.TextXAlignment.Center,
-        })
-        New("TextLabel", {
-            Parent         = banner,
-            Text           = "VIP Script — Garden Grow a Garden",
-            TextColor3     = Color3.fromRGB(180, 220, 255),
-            Font           = Enum.Font.GothamMedium,
-            TextSize       = 12,
-            Position       = UDim2.new(0, 0, 0.6, 0),
-            Size           = UDim2.new(1, 0, 0.4, 0),
-            BackgroundTransparency = 1,
-            TextXAlignment = Enum.TextXAlignment.Center,
-        })
+for i, pet in ipairs(WILD_PETS) do
+    State.wildPetESP[pet.name] = false
+    State.petAutoSettings[pet.name] = {autoBuy=false, autoTp=false}
 
-        SectionHeader(p, "CREDITS")
+    local petRow = Instance.new("Frame")
+    petRow.Size = UDim2.new(1, 0, 0, 0)
+    petRow.AutomaticSize = Enum.AutomaticSize.Y
+    petRow.BackgroundColor3 = Color3.fromRGB(8,8,8)
+    petRow.BorderSizePixel = 1
+    petRow.BorderColor3 = Color3.fromRGB(25,25,25)
+    petRow.LayoutOrder = i + 1
+    petRow.Parent = wpCard
+    Instance.new("UICorner", petRow).CornerRadius = UDim.new(0, 4)
 
-        local links = {
-            {"💬 Discord",  "discord.gg/rb7hCqvTD6"},
-            {"✈️ Telegram", "t.me/axcmy"},
-            {"✈️ Telegram", "t.me/mmcmy"},
-        }
-        for _, l in ipairs(links) do
-            local f = New("Frame", {
-                Parent          = p,
-                BackgroundColor3= C.bgCard,
-                Size            = UDim2.new(1, 0, 0, 40),
-            })
-            MakeCorner(8, f)
-            MakePadding(0,0,12,12,f)
-            New("TextLabel", {
-                Parent         = f,
-                Text           = l[1],
-                TextColor3     = C.textDim,
-                Font           = Enum.Font.Gotham,
-                TextSize       = 12,
-                Size           = UDim2.new(0.4, 0, 1, 0),
-                BackgroundTransparency = 1,
-                TextXAlignment = Enum.TextXAlignment.Left,
-            })
-            New("TextLabel", {
-                Parent         = f,
-                Text           = l[2],
-                TextColor3     = C.accent,
-                Font           = Enum.Font.GothamBold,
-                TextSize       = 13,
-                Position       = UDim2.new(0.4, 0, 0, 0),
-                Size           = UDim2.new(0.6, 0, 1, 0),
-                BackgroundTransparency = 1,
-                TextXAlignment = Enum.TextXAlignment.Left,
-            })
-        end
+    local pLayout = Instance.new("UIListLayout")
+    pLayout.Padding = UDim.new(0, 3)
+    pLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    pLayout.Parent = petRow
+    local pPad = Instance.new("UIPadding")
+    pPad.PaddingLeft = UDim.new(0, 8)
+    pPad.PaddingRight = UDim.new(0, 8)
+    pPad.PaddingTop = UDim.new(0, 6)
+    pPad.PaddingBottom = UDim.new(0, 6)
+    pPad.Parent = petRow
 
-        New("TextLabel", {
-            Parent         = p,
-            Text           = "Version 2.0  |  @ex_axl",
-            TextColor3     = C.textDim,
-            Font           = Enum.Font.Gotham,
-            TextSize       = 11,
-            Size           = UDim2.new(1, 0, 0, 24),
-            BackgroundTransparency = 1,
-            TextXAlignment = Enum.TextXAlignment.Center,
-        })
-    end
+    local headerRow = Instance.new("Frame")
+    headerRow.Size = UDim2.new(1, 0, 0, 22)
+    headerRow.BackgroundTransparency = 1
+    headerRow.LayoutOrder = 1
+    headerRow.Parent = petRow
 
-    -- ════════════════════════════════
-    --  TAB: PLAYER
-    -- ════════════════════════════════
-    do
-        local p = tabPages["player"]
+    local petName = Instance.new("TextLabel")
+    petName.Size = UDim2.new(0.5, 0, 1, 0)
+    petName.BackgroundTransparency = 1
+    petName.Text = pet.name
+    petName.TextColor3 = RARITY_COLORS[pet.rarity] or COLORS.TEXT
+    petName.TextSize = 12
+    petName.Font = Enum.Font.GothamBold
+    petName.TextXAlignment = Enum.TextXAlignment.Left
+    petName.Parent = headerRow
 
-        SectionHeader(p, T("yourPlot"):upper())
+    local rarityLbl = Instance.new("TextLabel")
+    rarityLbl.Size = UDim2.new(0.25, 0, 1, 0)
+    rarityLbl.Position = UDim2.new(0.5, 0, 0, 0)
+    rarityLbl.BackgroundTransparency = 1
+    rarityLbl.Text = "[" .. pet.rarity .. "]"
+    rarityLbl.TextColor3 = RARITY_COLORS[pet.rarity] or COLORS.TEXT
+    rarityLbl.TextSize = 10
+    rarityLbl.Font = Enum.Font.Gotham
+    rarityLbl.TextXAlignment = Enum.TextXAlignment.Center
+    rarityLbl.Parent = headerRow
 
-        -- Player info cards
-        local _, plotVal = CardLabel(p, T("yourPlot"), T("notFound"))
-        local _, farmVal = CardLabel(p, T("farmLabel"), "---")
+    local priceLbl = Instance.new("TextLabel")
+    priceLbl.Size = UDim2.new(0.25, 0, 1, 0)
+    priceLbl.Position = UDim2.new(0.75, 0, 0, 0)
+    priceLbl.BackgroundTransparency = 1
+    priceLbl.Text = FormatPrice(pet.price)
+    priceLbl.TextColor3 = COLORS.TEXT_DIM
+    priceLbl.TextSize = 10
+    priceLbl.Font = Enum.Font.Gotham
+    priceLbl.TextXAlignment = Enum.TextXAlignment.Right
+    priceLbl.Parent = headerRow
 
-        -- Plot selector dropdown
-        local plotOptions = {}
-        for i = 1, 8 do table.insert(plotOptions, T("plotLabel") .. " " .. i) end
-        local dd, getSelected = MakeDropdown(p, T("selectPlot"), plotOptions, function(opt)
-            Notify(T("teleport") .. ": " .. opt, C.accent)
-            -- Teleport to chosen plot
+    -- ESP toggle
+    MakeToggle(petRow, "ESP " .. pet.name, false, 2, function(state)
+        State.wildPetESP[pet.name] = state
+        ScanWildPets()
+    end)
+
+    -- Auto Teleport toggle
+    MakeToggle(petRow, T("auto_teleport") .. " — " .. pet.name, false, 3, function(state)
+        State.petAutoSettings[pet.name].autoTp = state
+        if state then
             task.spawn(function()
-                if not Gardens then return end
-                local idx = tonumber(opt:match("%d+"))
-                if not idx then return end
-                local targetPlot
-                for _, plot in pairs(Gardens:GetChildren()) do
-                    if plot.Name == "Plot" .. idx or tonumber(plot.Name:match("%d+")) == idx then
-                        targetPlot = plot
-                        break
-                    end
-                end
-                if targetPlot then
-                    local root = GetRoot()
-                    local ref = targetPlot:FindFirstChild("PlotSizeReference")
-                    if root and ref then
-                        root.CFrame = ref.CFrame + Vector3.new(0, 5, 0)
-                    end
+                while State.petAutoSettings[pet.name].autoTp do
+                    pcall(function()
+                        for _, obj in ipairs(Workspace:GetDescendants()) do
+                            if obj.Name:lower():find(pet.name:lower()) and obj:IsA("Model") then
+                                local primary = obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")
+                                if primary then
+                                    SafeTeleport(primary.Position + Vector3.new(0, 4, 0))
+                                end
+                            end
+                        end
+                    end)
+                    task.wait(1)
                 end
             end)
-        end)
-
-        -- Auto-detect player plot
-        task.spawn(function()
-            while true do
-                task.wait(2)
-                if not Gardens then
-                    pcall(function() Gardens = Workspace:FindFirstChild("Gardens") end)
-                    if not Gardens then continue end
-                end
-                for _, plot in pairs(Gardens:GetChildren()) do
-                    if plot:GetAttribute("OwnerUserId") == LocalPlayer.UserId then
-                        plotVal.Text = plot.Name
-                        local code = plot:GetAttribute("PlotCode") or plot:GetAttribute("FarmCode") or plot.Name
-                        farmVal.Text = tostring(code)
-                        break
-                    end
-                end
-            end
-        end)
-
-        SectionHeader(p, "PLAYER INFO")
-        local _, nameVal  = CardLabel(p, "Username", LocalPlayer.Name)
-        local _, idVal    = CardLabel(p, "User ID",  tostring(LocalPlayer.UserId))
-        nameVal.Text = LocalPlayer.Name
-        idVal.Text   = tostring(LocalPlayer.UserId)
-    end
-
-    -- ════════════════════════════════
-    --  TAB: FEATURES
-    -- ════════════════════════════════
-    do
-        local p = tabPages["features"]
-
-        -- ── FEATURE 1: GARDENS ──
-        SectionHeader(p, "🌱 " .. T("gardens"):upper())
-
-        local plotInfoCard, plotInfoVal = CardLabel(p, T("yourPlot"), T("notFound"))
-        Spacer(p, 4)
-
-        -- ── FEATURE 2: DROPPED ITEMS ──
-        SectionHeader(p, "📦 " .. T("droppedItems"):upper())
-
-        local droppedActive = false
-        local droppedLoop
-
-        local droppedToggle = MakeToggle(p, T("droppedItems") .. " Auto Collect", false, function(state)
-            droppedActive = state
-            if state then
-                Notify(T("droppedItems") .. " — " .. T("enabled"), C.green)
-                droppedLoop = task.spawn(function()
-                    while droppedActive do
-                        task.wait(0.2)
-                        if not Workspace:FindFirstChild("DroppedItems") then continue end
-                        for _, item in pairs(Workspace.DroppedItems:GetChildren()) do
-                            if not droppedActive then break end
-                            local root = GetRoot()
-                            if root and item:IsA("Model") then
-                                local primary = item.PrimaryPart or item:FindFirstChildOfClass("BasePart")
-                                if primary then
-                                    -- Proxy teleport: move to item, wait, move back
-                                    local originalCF = root.CFrame
-                                    root.CFrame = primary.CFrame + Vector3.new(0, 3, 0)
-                                    task.wait(0.05)
-                                    -- Fire collect remote if exists
-                                    pcall(function()
-                                        local remote = ReplicatedStorage:FindFirstChild("CollectItem")
-                                            or ReplicatedStorage:FindFirstChild("PickupItem")
-                                        if remote then remote:FireServer(item) end
-                                    end)
-                                    task.wait(0.1)
-                                end
-                            end
-                        end
-                    end
-                end)
-            else
-                Notify(T("droppedItems") .. " — " .. T("disabled"), C.red)
-                if droppedLoop then task.cancel(droppedLoop) end
-            end
-        end)
-
-        Spacer(p, 4)
-
-        -- ── FEATURE 3: WILD PET SPAWNS ──
-        SectionHeader(p, "🐾 " .. T("wildPets"):upper())
-
-        local petESP_Active   = false
-        local petAutoTP       = false
-        local petAutoBuy      = false
-        local espParts        = {}
-
-        local PetRarities = {
-            ["Frog"]           = {rarity="Common",    price=10000},
-            ["Bunny"]          = {rarity="Common",    price=20000},
-            ["Owl"]            = {rarity="Uncommon",  price=25000},
-            ["Deer"]           = {rarity="Rare",      price=50000},
-            ["Robin"]          = {rarity="Legendary", price=75000},
-            ["Bee"]            = {rarity="Legendary", price=1000000},
-            ["Monkey"]         = {rarity="Mythic",    price=3000000},
-            ["Golden Dragonfly"]={rarity="Mythic",   price=9000000},
-            ["Unicorn"]        = {rarity="Mythic",    price=12000000},
-            ["Raccoon"]        = {rarity="Super",     price=15000000},
-            ["Black Dragon"]   = {rarity="Super",     price=1000000},
-            ["Ice Serpent"]    = {rarity="Super",     price=0},
-        }
-        local rarityColors = {
-            Common   = Color3.fromRGB(180,180,180),
-            Uncommon = Color3.fromRGB(50,200,100),
-            Rare     = Color3.fromRGB(50,100,255),
-            Legendary= Color3.fromRGB(255,165,0),
-            Mythic   = Color3.fromRGB(180,0,255),
-            Super    = Color3.fromRGB(255,50,50),
-        }
-
-        local function clearESP()
-            for _, h in pairs(espParts) do pcall(function() h:Destroy() end) end
-            espParts = {}
         end
-
-        local espToggle = MakeToggle(p, "Pet ESP", false, function(state)
-            petESP_Active = state
-            if not state then clearESP() end
-            Notify("Pet ESP — " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        local tpToggle = MakeToggle(p, T("autoTp") .. " (Wild Pets)", false, function(state)
-            petAutoTP = state
-            Notify(T("autoTp") .. " — " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        local buyToggle = MakeToggle(p, T("autoBuy") .. " (Wild Pets)", false, function(state)
-            petAutoBuy = state
-            Notify(T("autoBuy") .. " — " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        -- Pet dropdown
-        local petNames = {}
-        for name, _ in pairs(PetRarities) do table.insert(petNames, name) end
-        table.sort(petNames)
-        table.insert(petNames, 1, "All Pets")
-        local petDD, getPetFilter = MakeDropdown(p, "Pet Filter", petNames, function(opt)
-            Notify("Filter: " .. opt, C.accent)
-        end)
-
-        -- Pet ESP & Auto loop
-        task.spawn(function()
-            while true do
-                task.wait(0.5)
-                if petESP_Active then
-                    clearESP()
-                    local filter = getPetFilter()
-                    -- Search workspace for wild pets
-                    local function searchForPets(parent)
-                        if not parent then return end
-                        for _, obj in pairs(parent:GetChildren()) do
-                            local name = obj.Name
-                            local info = PetRarities[name]
-                            if info and (filter == "All Pets" or filter == name) then
-                                local primary = obj.PrimaryPart or (obj:IsA("Model") and obj:FindFirstChildOfClass("BasePart"))
-                                if primary then
-                                    -- Create billboard ESP
-                                    local bb = New("BillboardGui", {
-                                        Parent      = primary,
-                                        Size        = UDim2.new(0, 120, 0, 40),
-                                        AlwaysOnTop = true,
-                                        StudsOffset = Vector3.new(0, 3, 0),
-                                    })
-                                    local lbl = New("TextLabel", {
-                                        Parent         = bb,
-                                        Text           = name .. "\n[" .. info.rarity .. "]",
-                                        TextColor3     = rarityColors[info.rarity] or C.white,
-                                        Font           = Enum.Font.GothamBold,
-                                        TextSize       = 13,
-                                        Size           = UDim2.new(1,0,1,0),
-                                        BackgroundColor3= Color3.fromRGB(0,0,0),
-                                        BackgroundTransparency = 0.4,
-                                        TextWrapped    = true,
-                                    })
-                                    MakeCorner(4, lbl)
-                                    table.insert(espParts, bb)
-
-                                    -- Notify
-                                    Notify(T("petFound") .. " " .. name .. " (" .. info.rarity .. ")", rarityColors[info.rarity] or C.white)
-
-                                    -- Auto teleport
-                                    if petAutoTP then
-                                        local root = GetRoot()
-                                        if root then
-                                            root.CFrame = primary.CFrame + Vector3.new(0, 4, 0)
-                                        end
-                                    end
-
-                                    -- Auto buy
-                                    if petAutoBuy and info.price > 0 then
-                                        task.spawn(function()
-                                            pcall(function()
-                                                local buyRemote = ReplicatedStorage:FindFirstChild("BuyPet")
-                                                    or ReplicatedStorage:FindFirstChild("PurchasePet")
-                                                if buyRemote then
-                                                    buyRemote:FireServer(name, info.price)
-                                                    Notify("Bought: " .. name, C.gold)
-                                                end
-                                            end)
-                                        end)
-                                    end
-                                end
-                            end
-                            -- Recurse
-                            if obj:IsA("Folder") or obj:IsA("Model") then
-                                searchForPets(obj)
-                            end
-                        end
-                    end
-                    searchForPets(Workspace)
-                end
-            end
-        end)
-
-        Spacer(p, 4)
-
-        -- ── FEATURE 4: SEED PACK SPAWNER ──
-        SectionHeader(p, "🌾 " .. T("seedPack"):upper())
-
-        local seedActive = false
-        local seedToggle = MakeToggle(p, T("seedPack") .. " Auto Collect", false, function(state)
-            seedActive = state
-            Notify(T("seedPack") .. " — " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        task.spawn(function()
-            while true do
-                task.wait(0.3)
-                if not seedActive then continue end
-                -- Look for SeedPackSpawnClient in workspace
-                local function findSeedPacks(parent)
-                    if not parent then return end
-                    for _, obj in pairs(parent:GetChildren()) do
-                        if obj.Name:find("SeedPack") or obj.Name:find("Seed") then
-                            local root = GetRoot()
-                            local primary = (obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")))
-                                         or (obj:IsA("BasePart") and obj)
-                            if root and primary then
-                                root.CFrame = primary.CFrame + Vector3.new(0, 4, 0)
-                                task.wait(0.1)
-                                pcall(function()
-                                    local remote = ReplicatedStorage:FindFirstChild("CollectSeedPack")
-                                        or ReplicatedStorage:FindFirstChild("PickupSeedPack")
-                                        or ReplicatedStorage:FindFirstChild("CollectItem")
-                                    if remote then remote:FireServer(obj) end
-                                end)
-                                Notify(T("collected") .. " Seed Pack!", C.green)
-                                task.wait(0.1)
-                            end
-                        end
-                        if obj:IsA("Folder") or obj:IsA("Model") then
-                            findSeedPacks(obj)
-                        end
-                    end
-                end
-                findSeedPacks(Workspace)
-            end
-        end)
-
-        Spacer(p, 4)
-
-        -- ── FEATURE 5: AUTO PROXY FARM (YOUR PLOT ONLY) ──
-        SectionHeader(p, "🤖 " .. T("autoProxy"):upper())
-
-        local proxyActive = false
-        local proxyToggle = MakeToggle(p, T("autoProxy") .. " (Your Plot)", false, function(state)
-            proxyActive = state
-            Notify(T("autoProxy") .. " — " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        -- Status card
-        local _, proxyStatusVal = CardLabel(p, T("status"), T("inactive"))
-
-        task.spawn(function()
-            while true do
-                task.wait(0.3)
-                if not proxyActive then
-                    proxyStatusVal.Text = T("inactive")
-                    proxyStatusVal.TextColor3 = C.red
-                    continue
-                end
-                proxyStatusVal.Text = T("active")
-                proxyStatusVal.TextColor3 = C.green
-
-                if not Gardens then
-                    pcall(function() Gardens = Workspace:FindFirstChild("Gardens") end)
-                    if not Gardens then continue end
-                end
-
-                -- Find my plot
-                local myPlot
-                for _, plot in pairs(Gardens:GetChildren()) do
-                    if plot:GetAttribute("OwnerUserId") == LocalPlayer.UserId then
-                        myPlot = plot
-                        break
-                    end
-                end
-                if not myPlot then continue end
-
-                local plantsFolder = myPlot:FindFirstChild("Plants")
-                if not plantsFolder then continue end
-
-                for _, plant in pairs(plantsFolder:GetChildren()) do
-                    if not proxyActive then break end
-                    local fruits = plant:FindFirstChild("Fruits")
-                    if fruits then
-                        for _, fruit in pairs(fruits:GetChildren()) do
-                            if not proxyActive then break end
-                            local harvestPart = fruit:FindFirstChild("HarvestPart")
-                            local prompt = harvestPart and (harvestPart:FindFirstChild("HarvestPrompt") or harvestPart:FindFirstChild("ProximityPrompt"))
-                            if harvestPart then
-                                local root = GetRoot()
-                                if root then
-                                    root.CFrame = harvestPart.CFrame + Vector3.new(0, 3, 0)
-                                    task.wait(0.08)
-                                    pcall(function()
-                                        if Networking and Networking.Harvest then
-                                            Networking.Harvest:FireServer(
-                                                fruit:GetAttribute("PlantId"),
-                                                fruit:GetAttribute("FruitId") or ""
-                                            )
-                                        end
-                                    end)
-                                    task.wait(0.05)
-                                end
-                            end
-                        end
-                    else
-                        -- Single fruit plant
-                        local harvestPart = plant:FindFirstChild("HarvestPart")
-                        if harvestPart then
-                            local root = GetRoot()
-                            if root then
-                                root.CFrame = harvestPart.CFrame + Vector3.new(0, 3, 0)
-                                task.wait(0.08)
-                                pcall(function()
-                                    if Networking and Networking.Harvest then
-                                        Networking.Harvest:FireServer(
-                                            plant:GetAttribute("PlantId"),
-                                            ""
-                                        )
-                                    end
-                                end)
-                                task.wait(0.05)
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-
-    -- ════════════════════════════════
-    --  TAB: SETTINGS
-    -- ════════════════════════════════
-    do
-        local p = tabPages["settings"]
-
-        SectionHeader(p, "🌍 LANGUAGE")
-
-        local langOptions = {"English", "العربية", "کوردی"}
-        local langCodes   = {EN="English", AR="العربية", KU="کوردی"}
-        local _, getLangSel = MakeDropdown(p, "Language / اللغة", langOptions, function(opt)
-            if opt == "English"  then LANG = "EN"
-            elseif opt == "العربية" then LANG = "AR"
-            elseif opt == "کوردی"  then LANG = "KU"
-            end
-            Notify("Language changed — restart for full effect", C.gold)
-        end)
-
-        Spacer(p, 4)
-        SectionHeader(p, "⚡ PERFORMANCE")
-
-        MakeToggle(p, "Fast Collect Mode", true, function(state)
-            Notify("Fast Collect: " .. (state and T("enabled") or T("disabled")), state and C.green or C.red)
-        end)
-
-        MakeToggle(p, "Notifications", true, function(state)
-            -- Toggle notification visibility
-        end)
-
-        Spacer(p, 4)
-        SectionHeader(p, "📋 ABOUT")
-
-        local infoTexts = {
-            {"Script",  "AXL GARDEN 2"},
-            {"Version", "2.0 VIP"},
-            {"Author",  "@ex_axl"},
-            {"Discord", "discord.gg/rb7hCqvTD6"},
-        }
-        for _, row in ipairs(infoTexts) do
-            local f = New("Frame", {
-                Parent          = p,
-                BackgroundColor3= C.bgCard,
-                Size            = UDim2.new(1, 0, 0, 36),
-            })
-            MakeCorner(8, f)
-            MakePadding(0,0,12,12,f)
-            New("TextLabel", {
-                Parent         = f,
-                Text           = row[1],
-                TextColor3     = C.textDim,
-                Font           = Enum.Font.Gotham,
-                TextSize       = 12,
-                Size           = UDim2.new(0.4, 0, 1, 0),
-                BackgroundTransparency = 1,
-                TextXAlignment = Enum.TextXAlignment.Left,
-            })
-            New("TextLabel", {
-                Parent         = f,
-                Text           = row[2],
-                TextColor3     = C.text,
-                Font           = Enum.Font.GothamBold,
-                TextSize       = 13,
-                Position       = UDim2.new(0.4, 0, 0, 0),
-                Size           = UDim2.new(0.6, 0, 1, 0),
-                BackgroundTransparency = 1,
-                TextXAlignment = Enum.TextXAlignment.Left,
-            })
-        end
-    end
-
-    -- Activate first tab
-    setTab("info")
-
-    -- Entrance animation
-    MainFrame.Size = UDim2.new(0, 480, 0, 0)
-    MainFrame.BackgroundTransparency = 1
-    Tween(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 480, 0, 520),
-        BackgroundTransparency = 0,
-    })
-end
-
--- Language button callbacks
-btnEN.MouseButton1Click:Connect(function() LANG = "EN" BuildMainGUI() end)
-btnAR.MouseButton1Click:Connect(function() LANG = "AR" BuildMainGUI() end)
-btnKU.MouseButton1Click:Connect(function() LANG = "KU" BuildMainGUI() end)
-
--- Hover effects on lang buttons
-for _, b in ipairs({btnEN, btnAR, btnKU}) do
-    b.MouseEnter:Connect(function()
-        Tween(b, TweenInfo.new(0.15), {BackgroundColor3 = C.accent})
     end)
-    b.MouseLeave:Connect(function()
-        Tween(b, TweenInfo.new(0.15), {BackgroundColor3 = C.accentGlow})
+
+    -- Auto Buy toggle
+    MakeToggle(petRow, T("auto_buy") .. " — " .. pet.name, false, 4, function(state)
+        State.petAutoSettings[pet.name].autoBuy = state
+        if state then
+            task.spawn(function()
+                while State.petAutoSettings[pet.name].autoBuy do
+                    pcall(function()
+                        for _, obj in ipairs(Workspace:GetDescendants()) do
+                            if obj.Name:lower():find(pet.name:lower()) and obj:IsA("Model") then
+                                local remotes = ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage:FindFirstChild("Events")
+                                if remotes then
+                                    local buy = remotes:FindFirstChild("BuyPet") or remotes:FindFirstChild("Purchase")
+                                    if buy then
+                                        pcall(function() buy:FireServer(obj) end)
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                    task.wait(2)
+                end
+            end)
+        end
     end)
 end
 
--- ╔══════════════════════════════════════════════════════════════╗
--- ║   AXL GARDEN 2 — VIP GUI — t.me/axcmy | discord.gg/rb7hCqvTD6 ║
--- ╚══════════════════════════════════════════════════════════════╝
+-- ─── Feature 4: Seed Pack Spawns ───
+local spCard = MakeCard(featPage, 4)
+MakeSectionTitle(spCard, "🌾 Feat 4 — " .. T("seed_pack"), 1)
+
+MakeToggle(spCard, T("seed_toggle"), false, 2, function(state)
+    State.seedPackToggle = state
+    if state then
+        StartSeedPackLoop()
+        Notify("Seed Pack Collector: ON")
+    else
+        State.seedPackLoop = false
+        Notify("Seed Pack Collector: OFF")
+    end
+end)
+
+-- ─── Feature 5: Auto Harvest ───
+local ahCard = MakeCard(featPage, 5)
+MakeSectionTitle(ahCard, "🌙 Feat 5 — " .. T("auto_harvest"), 1)
+
+local harvestNote = Instance.new("TextLabel")
+harvestNote.Size = UDim2.new(1, 0, 0, 30)
+harvestNote.BackgroundTransparency = 1
+harvestNote.Text = "⚠️ Run at night time in-game for best results"
+harvestNote.TextColor3 = COLORS.ACCENT
+harvestNote.TextSize = 11
+harvestNote.Font = Enum.Font.Gotham
+harvestNote.TextXAlignment = Enum.TextXAlignment.Left
+harvestNote.TextWrapped = true
+harvestNote.LayoutOrder = 2
+harvestNote.Parent = ahCard
+
+MakeToggle(ahCard, T("auto_harvest"), false, 3, function(state)
+    State.autoHarvestToggle = state
+    if state then
+        StartAutoHarvest()
+        Notify("Auto Harvest: ON")
+    else
+        Notify("Auto Harvest: OFF (re-execute to stop)")
+    end
+end)
+
+-- ─── Feature 6: Auto Proxy ───
+local apCard = MakeCard(featPage, 6)
+MakeSectionTitle(apCard, "🔄 Feat 6 — " .. T("auto_proxy"), 1)
+
+MakeToggle(apCard, T("proxy_toggle"), false, 2, function(state)
+    State.autoProxyToggle = state
+    if state then
+        StartAutoProxy()
+        Notify("Auto Proxy: ON")
+    else
+        State.autoProxyLoop = false
+        Notify("Auto Proxy: OFF")
+    end
+end)
+
+-- ══════════════════════════════════════════════════════════
+--                    SETTINGS PAGE
+-- ══════════════════════════════════════════════════════════
+local settPage = TabPages["settings"]
+
+local langCard = MakeCard(settPage, 1)
+MakeSectionTitle(langCard, "🌐 " .. T("language"), 1)
+
+local langOptions = {"🇬🇧 English", "🇸🇦 العربية", "🏴 کوردی"}
+local langMap = {["🇬🇧 English"]="EN", ["🇸🇦 العربية"]="AR", ["🏴 کوردی"]="KU"}
+
+MakeDropdown(langCard, langOptions, "🇬🇧 English", 2, function(opt)
+    LANG = langMap[opt] or "EN"
+    Notify("Language changed! Reload for full effect.")
+end)
+
+local notifCard = MakeCard(settPage, 2)
+MakeSectionTitle(notifCard, "🔔 " .. T("notifications"), 1)
+
+MakeToggle(notifCard, T("notifications"), true, 2, function(state)
+    State.notifications = state
+end)
+
+local espCard = MakeCard(settPage, 3)
+MakeSectionTitle(espCard, "🎯 ESP Scanner", 1)
+
+local scanBtn = MakeButton(espCard, "🔄 Scan Wild Pets Now", 2)
+scanBtn.MouseButton1Click:Connect(function()
+    ScanWildPets()
+    Notify("ESP Scan complete!")
+end)
+
+local clearESPBtn = MakeButton(espCard, "❌ Clear All ESP", 3)
+clearESPBtn.TextColor3 = COLORS.DANGER
+clearESPBtn.MouseButton1Click:Connect(function()
+    ClearESP()
+    Notify("ESP Cleared")
+end)
+
+local credCard = MakeCard(settPage, 4)
+MakeSectionTitle(credCard, "👑 Credits", 1)
+local credTxt = Instance.new("TextLabel")
+credTxt.Size = UDim2.new(1, 0, 0, 50)
+credTxt.BackgroundTransparency = 1
+credTxt.Text = "AXL GARDEN 2 — VIP Edition\nDeveloped by @ex_axl\ndiscord.gg/rb7hCqvTD6"
+credTxt.TextColor3 = COLORS.TEXT_DIM
+credTxt.TextSize = 11
+credTxt.Font = Enum.Font.Gotham
+credTxt.TextXAlignment = Enum.TextXAlignment.Left
+credTxt.TextWrapped = true
+credTxt.LayoutOrder = 2
+credTxt.Parent = credCard
+
+-- ══════════════════════════════════════════════════════════
+--                    START ON INFO TAB
+-- ══════════════════════════════════════════════════════════
+SwitchTab("info")
+
+-- Wild pet ESP auto-scan loop
+task.spawn(function()
+    while true do
+        local anyESP = false
+        for _, v in pairs(State.wildPetESP) do
+            if v then anyESP = true break end
+        end
+        if anyESP then ScanWildPets() end
+        task.wait(5)
+    end
+end)
+
+print("✅ AXL GARDEN 2 VIP - Loaded Successfully!")
+print("📱 Discord: discord.gg/rb7hCqvTD6")
+print("📱 Telegram: t.me/axcmy | t.me/mmcmy")
+

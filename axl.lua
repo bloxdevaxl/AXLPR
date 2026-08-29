@@ -25,6 +25,41 @@ local n=l.Heartbeat
 local o=m.LocalPlayer
 local p=o:GetMouse()
 
+local SOUND_SERVICE=a(game:GetService("SoundService"))
+
+local SFX={
+Click="rbxassetid://6895079853",
+Pop="rbxassetid://9126066844",
+Open="rbxassetid://9126066844",
+Close="rbxassetid://9126066844"
+}
+
+local function playSFX(soundId,volume)
+local snd=Instance.new("Sound")
+snd.SoundId=soundId
+snd.Volume=volume or 0.55
+snd.PlaybackSpeed=1
+snd.Parent=SOUND_SERVICE
+snd:Play()
+game:GetService("Debris"):AddItem(snd,2)
+end
+
+local function playClick()
+playSFX(SFX.Click,0.5)
+end
+
+local function playPop()
+playSFX(SFX.Pop,0.55)
+end
+
+local function playOpen()
+playSFX(SFX.Open,0.5)
+end
+
+local function playClose()
+playSFX(SFX.Close,0.45)
+end
+
 local q=(gethui or function()return g.CoreGui end)()
 
 local r={
@@ -105,8 +140,8 @@ GitHubOwner="tlredz"
 },
 Default={
 Theme="Darker",
-UISize=UDim2.fromOffset(600,420),
-TabSize=160
+UISize=UDim2.fromOffset(680,480),
+TabSize=210
 },
 
 Themes=r,
@@ -642,7 +677,7 @@ local az=J(ax,"BackgroundTransparency",1,0.3)
 
 u(ax.MouseLeave,function()az:Play()end)
 u(ax.MouseEnter,function()ay:Play()end)
-u(ax.Activated,function()G(aw)end)
+u(ax.Activated,function()playClick()G(aw)end)
 
 ax.Parent=aa.Template.Options
 end
@@ -843,7 +878,7 @@ end local al=function(
 
 al, am, an)
 local ao=E("TextButton","Button",an,{
-Size=UDim2.new(1,0,0,24),
+Size=UDim2.new(1,0,0,30),
 AutoButtonColor=false,
 Text="",
 Elements={
@@ -857,7 +892,7 @@ E("TextLabel","Title",{
 BackgroundTransparency=1,
 Font=Enum.Font.GothamMedium,
 Text=am.Title,
-TextSize=10,
+TextSize=12,
 TextXAlignment=Enum.TextXAlignment.Left,
 TextTransparency=(FirstTab and 0.3)or 0,
 TextTruncate=Enum.TextTruncate.AtEnd,
@@ -940,7 +975,7 @@ Size=UDim2.new(1,-20),
 Position=UDim2.fromScale(0,0.5),
 AnchorPoint=Vector2.new(0,0.5),
 BackgroundTransparency=1,
-TextSize=11,
+TextSize=13,
 ThemeTag={
 OBJECTS=C,
 TextColor3="Colors.Text.Default",
@@ -1578,7 +1613,7 @@ TextTruncate=Enum.TextTruncate.AtEnd,
 Size=UDim2.new(1,-25,1,0),
 Position=UDim2.new(0,5),
 BackgroundTransparency=1,
-TextSize=17,
+TextSize=19,
 Text=av,
 ThemeTag={
 OBJECTS=aw,
@@ -1618,7 +1653,7 @@ local aB=V[self]
 local aC,aD,aE=am(self,aw,ax,UDim2.new(1,-38,0,0))
 
 local aF=E("Frame",aC,{
-Size=UDim2.new(0,35,0,18),
+Size=UDim2.new(0,42,0,22),
 Position=UDim2.new(1,-10,0.5),
 AnchorPoint=Vector2.new(1,0.5),
 Elements={
@@ -1709,6 +1744,7 @@ local aQ=0
 u(aC.Activated,function()
 if(tick()-aQ)>=aK then
 aQ=tick()
+playClick()
 aP:SetValue(not aP.Value)
 end
 end)
@@ -1744,6 +1780,7 @@ if az~=nil then
 aF=tick()+az
 end
 
+playClick()
 G(ay)
 end)
 
@@ -1784,7 +1821,7 @@ local aD=V[self]
 local aE,aF,aG=am(self,aw,ax,UDim2.new(1,-150,0,0))
 
 local aH=E("Frame",aE,{
-Size=UDim2.new(0,150,0,18),
+Size=UDim2.new(0,170,0,22),
 Position=UDim2.new(1,-10,0.5),
 AnchorPoint=Vector2.new(1,0.5),
 ThemeTag={
@@ -1792,7 +1829,7 @@ OBJECTS=aD,
 BackgroundColor3="Colors.Stroke"
 },
 Elements={
-Corner=UDim.new(0,8)
+Corner=UDim.new(0,10)
 }
 })
 
@@ -2707,6 +2744,7 @@ end
 end
 
 u(aE.Activated,function()
+playClick()
 a1(not aO)
 end)
 
@@ -2937,6 +2975,7 @@ Container=aD
 table.insert(S,ay)
 
 u(aC.Activated,function()
+playClick()
 ay:Select()
 end)
 
@@ -3220,6 +3259,8 @@ aa.Parent=ab
 aA.Text=ax
 aB.Text=aw
 
+playPop()
+
 J(az,"Size",aC,0.3):Play()
 
 local aE=ak.Dialog.new(aA,aB)
@@ -3410,6 +3451,7 @@ end
 
 aB.Position=UDim2.fromScale(3,0)
 J(aB,"Position",UDim2.fromScale(0,0),0.35):Play()
+playPop()
 
 aE.Text=aw
 aF.Text=ax
@@ -3807,6 +3849,17 @@ Color="Colors.Background"
 }
 })
 
+local OPEN_SCALE=E("UIScale","OpenScale",ak,{
+Scale=0.001
+})
+
+playOpen()
+
+local OPEN_TWEEN=j:Create(OPEN_SCALE,TweenInfo.new(0.45,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
+Scale=1
+})
+OPEN_TWEEN:Play()
+
 u(ak.Destroying,function()
 self:Destroy()
 end)
@@ -3981,7 +4034,15 @@ Content="You Want Close UI?",
 Options={
 {
 Title="Yes",
-Callback=function()self:Destroy()end
+Callback=function()
+playClose()
+local closeTween=j:Create(OPEN_SCALE,TweenInfo.new(0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{
+Scale=0.001
+})
+closeTween:Play()
+closeTween.Completed:Wait()
+self:Destroy()
+end
 },
 {
 Title="No"
@@ -4014,10 +4075,12 @@ Flags=ag
 }
 
 u(aq.Activated,function()
+playClick()
 as:MinimizeButton()
 end)
 
 u(ar.Activated,function()
+playClick()
 as:Dialog(aA)
 end)
 

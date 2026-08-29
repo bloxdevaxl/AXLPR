@@ -1603,21 +1603,15 @@ av=av or""
 local aw=V[self]
 
 local ax=E("Frame","Option",T[self].Container,{
-Size=UDim2.new(1,0,0,34),
-BackgroundTransparency=1,
-Elements={
-Padding={
-PaddingTop=UDim.new(0,10),
-PaddingBottom=UDim.new(0,4)
-}
-}
+Size=UDim2.new(1,0,0,20),
+BackgroundTransparency=1
 })
 
 local ay=E("TextLabel",ax,{
 TextXAlignment=Enum.TextXAlignment.Left,
 TextTruncate=Enum.TextTruncate.AtEnd,
-Size=UDim2.new(1,-25,0,20),
-Position=UDim2.new(0,5,0,0),
+Size=UDim2.new(1,-25,1,0),
+Position=UDim2.new(0,5),
 BackgroundTransparency=1,
 TextSize=19,
 Text=av,
@@ -1625,27 +1619,6 @@ ThemeTag={
 OBJECTS=aw,
 TextColor3="Colors.Text.Default",
 Font="Font.Bold"
-}
-})
-
-local aB=E("Frame",ax,{
-Size=UDim2.new(1,-5,0,2),
-Position=UDim2.new(0,5,0,26),
-BackgroundTransparency=0.35,
-Elements={
-Corner=UDim.new(1,0),
-Gradient={
-ThemeTag={
-Color=ColorSequence.new{
-ColorSequenceKeypoint.new(0.00,Color3.fromRGB(138,80,242)),
-ColorSequenceKeypoint.new(1.00,Color3.fromRGB(20,16,26))
-}
-}
-}
-},
-ThemeTag={
-OBJECTS=aw,
-BackgroundColor3="Colors.Primary"
 }
 })
 
@@ -1680,39 +1653,32 @@ local aB=V[self]
 local aC,aD,aE=am(self,aw,ax,UDim2.new(1,-38,0,0))
 
 local aF=E("Frame",aC,{
-Size=UDim2.new(0,46,0,25),
+Size=UDim2.new(0,42,0,22),
 Position=UDim2.new(1,-10,0.5),
 AnchorPoint=Vector2.new(1,0.5),
 Elements={
-Corner=UDim.new(0.5,0),
-Stroke={
-Thickness=1,
-ThemeTag={
-OBJECTS=aB,
-Color="Colors.Border.Default"
-}
-}
+Corner=UDim.new(0.5,0)
 },
 ThemeTag={
 OBJECTS=aB,
-BackgroundColor3="Colors.Buttons.Default"
+BackgroundColor3="Colors.Stroke"
 }
 })
 
 local aG=E("Frame",aF,{
 BackgroundTransparency=1,
-Size=UDim2.new(1,-6,1,-6),
+Size=UDim2.new(0.8,0,0.8,0),
 Position=UDim2.new(0.5,0,0.5,0),
 AnchorPoint=Vector2.new(0.5,0.5)
 })
 
 local aH={
 OBJECTS=aB,
-BackgroundColor3="Colors.Text.Default"
+BackgroundColor3="Colors.OnPrimary"
 }
 
 local aI=E("Frame",aG,{
-Size=UDim2.new(0,19,0,19),
+Size=UDim2.new(0,12,0,12),
 Position=UDim2.new(0,0,0.5),
 AnchorPoint=Vector2.new(0,0.5),
 Elements={
@@ -1749,22 +1715,22 @@ G(aA,aO)
 
 local aP=UDim2.new(aO and 1 or 0,0,0.5,0)
 local aQ=Vector2.new(aO and 1 or 0,0.5)
-local aR=aO and"Colors.Primary"or"Colors.Buttons.Default"
+local aR=aO and"Colors.Primary"or"Colors.OnPrimary"
 local aS=w(s.CurrentTheme,aR)
 
-aF.BackgroundColor3=aR
+aH.BackgroundColor3=aR
 
 if self.Selected and(tick()-aJ)>=aK then
 aM{
 J(aI,"Position",aP,0.25),
 J(aI,"AnchorPoint",aQ,0.25),
-J(aF,"BackgroundColor3",aS,0.25)
+J(aI,"BackgroundColor3",aS,0.25)
 }
 else
 aN()
 aI.Position=aP
 aI.AnchorPoint=aQ
-aF.BackgroundColor3=aS
+aI.BackgroundColor3=aS
 end
 
 aJ=tick()end
